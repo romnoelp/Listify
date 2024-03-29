@@ -82,7 +82,7 @@ const LoginScreen = ({ navigation }: Props) => {
           onPress={() => navigation.replace("LoginScreen")}
         />
       </View>
-      <View style={{ flexDirection: "row", marginTop: hp(10) }}>
+      <View style={{ flexDirection: "row", marginTop: hp(19) }}>
         <Text style={styles.registerText}>Don't have an account yet? </Text>
         <TouchableOpacity onPress={handleRegisterPress}>
           <Text style={[styles.registerText, { fontFamily: "kodchasan-bold", marginTop: hp(4.9) }]}>

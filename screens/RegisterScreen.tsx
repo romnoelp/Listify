@@ -91,7 +91,7 @@ const RegisterScreen = ({ navigation }: Props) => {
         />
       </View>
       <View style={{ flexDirection: "row", marginTop: hp(10) }}>
-        <Text style={styles.registerText}>Already have an account yet? </Text>
+        <Text style={styles.registerText}>Already have an account? </Text>
         <TouchableOpacity onPress={handleLoginPress}>
           <Text style={[styles.registerText, { fontFamily: "kodchasan-bold", marginTop: hp(4.9) }]}>
             Login here!

@@ -28,6 +28,7 @@ const LandingScreen = ({ navigation }: Props) => {
       loadFont().then(() => setIsFontLoaded(true));
     }
   });
+  
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
       {isFontLoaded ? (
