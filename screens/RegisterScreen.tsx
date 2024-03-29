@@ -31,10 +31,20 @@ const RegisterScreen = ({ navigation }: Props) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMatch, setPasswordMatch] = useState(true);
 
   useEffect(() => {
     loadFont().then(() => setFontLoaded(true));
   }, []);
+
+  useEffect(() => {
+    if (password !== "" && confirmPassword !== "") {
+      setPasswordMatch(password === confirmPassword);
+    } else {
+      setPasswordMatch(true);
+    }
+  }, [password, confirmPassword]);
 
   if (!fontLoaded) {
     return null;
@@ -71,7 +81,19 @@ const RegisterScreen = ({ navigation }: Props) => {
           value={password}
           placeholder="Password"
           placeholderTextColor="#8F8F8F"
+          secureTextEntry
         />
+        <TextInput
+          style={[styles.inputField, !passwordMatch && styles.inputFieldError]}
+          onChangeText={(text) => setConfirmPassword(text)}
+          value={confirmPassword}
+          placeholder="Confirm password"
+          placeholderTextColor="#8F8F8F"
+          secureTextEntry
+        />
+        {!passwordMatch && (
+          <Text style={styles.errorText}>Passwords do not match</Text>
+        )}
       </View>
       <View style={styles.buttonContainer}>
         <Button
@@ -93,7 +115,12 @@ const RegisterScreen = ({ navigation }: Props) => {
       <View style={{ flexDirection: "row", marginTop: hp(10) }}>
         <Text style={styles.registerText}>Already have an account? </Text>
         <TouchableOpacity onPress={handleLoginPress}>
-          <Text style={[styles.registerText, { fontFamily: "kodchasan-bold", marginTop: hp(4.9) }]}>
+          <Text
+            style={[
+              styles.registerText,
+              { fontFamily: "kodchasan-bold", marginTop: hp(4.9) },
+            ]}
+          >
             Login here!
           </Text>
         </TouchableOpacity>
@@ -146,6 +173,15 @@ const styles = StyleSheet.create({
     paddingVertical: hp("1%"),
     backgroundColor: "#FFFFFF",
     fontSize: wp("4%"),
+  },
+  inputFieldError: {
+    borderColor: "red",
+  },
+  errorText: {
+    fontFamily: "kodchasan-medium",
+    fontSize: wp(3.5),
+    color: "red",
+    marginTop: hp(1),
   },
   registerText: {
     fontFamily: "kodchasan-medium",
