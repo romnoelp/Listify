@@ -21,11 +21,9 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    alignItems: "center", 
-    justifyContent: "center", 
-    backgroundColor: "tomato",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
   },
-  logo: {
-    
-  },
+  logo: {},
 });
