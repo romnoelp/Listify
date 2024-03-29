@@ -103,7 +103,7 @@ const App = () => {
   }, []);
   return (
     <NavigationContainer>
-      <MainStack.Navigator initialRouteName="MainTopTab">
+      <MainStack.Navigator initialRouteName="LoginScreen">
         <MainStack.Screen
           name="LandingScreen"
           component={LandingScreen}

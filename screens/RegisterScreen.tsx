@@ -40,7 +40,7 @@ const RegisterScreen = ({ navigation }: Props) => {
     return null;
   }
 
-  const hanleLoginPress = () => {
+  const handleLoginPress = () => {
     navigation.replace("LoginScreen");
   };
 
@@ -90,20 +90,13 @@ const RegisterScreen = ({ navigation }: Props) => {
           onPress={() => navigation.replace("RegisterScreen")}
         />
       </View>
-      <View style={{ flexDirection: "row" }}>
-        <Text
-          style={{
-            fontFamily: "kodchasan-regular",
-            fontSize: wp(3.5),
-            marginTop: hp(20),
-            marginBottom: hp(8),
-          }}
-        >
-          Already have an account?{" "}
-          <TouchableOpacity onPress={hanleLoginPress}>
-            <Text style={styles.registerText}>Login here!</Text>
-          </TouchableOpacity>
-        </Text>
+      <View style={{ flexDirection: "row", marginTop: hp(10) }}>
+        <Text style={styles.registerText}>Already have an account yet? </Text>
+        <TouchableOpacity onPress={handleLoginPress}>
+          <Text style={[styles.registerText, { fontFamily: "kodchasan-bold", marginTop: hp(4.9) }]}>
+            Login here!
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -158,6 +151,7 @@ const styles = StyleSheet.create({
     fontFamily: "kodchasan-medium",
     fontSize: wp(3.5),
     color: "#414042",
-    lineHeight: hp(3.5),
+    marginTop: hp(5),
+    marginBottom: hp(20),
   },
 });
