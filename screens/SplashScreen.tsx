@@ -7,7 +7,7 @@ import React from "react";
 import { landingScreenLogo } from "../loadSVG";
 import { SvgXml } from "react-native-svg";
 
-const LandingScreen = () => {
+const SplashScreen = () => {
   return (
     <View style={styles.mainContainer}>
       <SvgXml xml={landingScreenLogo} style={styles.logo} />
@@ -15,7 +15,7 @@ const LandingScreen = () => {
   );
 };
 
-export default LandingScreen;
+export default SplashScreen;
 
 const styles = StyleSheet.create({
   mainContainer: {

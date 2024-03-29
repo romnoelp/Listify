@@ -1,6 +1,6 @@
 export type MainStackParamList = {
   SplashScreen: undefined;
-  LogInScreen: undefined;
+  LoginScreen: undefined;
   RegisterScreen: undefined;
   LandingScreen: undefined;
 };
