@@ -35,6 +35,11 @@ const MainTopTab = () => {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
           },
+          tabBarStyle: {
+            borderBottomColor: "#414042",
+            borderBottomWidth: wp(0.2),
+          },
+          tabBarIndicator: () => <></>,
         }}
       />
       <TopNavigator.Screen
@@ -46,6 +51,11 @@ const MainTopTab = () => {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
           },
+          tabBarStyle: {
+            borderBottomColor: "#414042",
+            borderBottomWidth: wp(0.2),
+          },
+          tabBarIndicator: () => <></>,
         }}
       />
       <TopNavigator.Screen
@@ -57,6 +67,11 @@ const MainTopTab = () => {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
           },
+          tabBarStyle: {
+            borderBottomColor: "#414042",
+            borderBottomWidth: wp(0.2),
+          },
+          tabBarIndicator: () => <></>,
         }}
       />
       <TopNavigator.Screen
@@ -68,6 +83,11 @@ const MainTopTab = () => {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
           },
+          tabBarStyle: {
+            borderBottomColor: "#414042",
+            borderBottomWidth: wp(0.2),
+          },
+          tabBarIndicator: () => <></>,
         }}
       />
     </TopNavigator.Navigator>
