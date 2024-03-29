@@ -80,25 +80,24 @@ const LandingScreen = ({ navigation }: Props) => {
             <Button
               title={"Login"}
               color={"#414042"}
-              buttonStyle={{ borderRadius: wp(2), width: wp(20) }}
               titleStyle={{ fontSize: hp(1.8), fontFamily: "kodchasan-light" }}
               containerStyle={{
                 borderRadius: wp(2),
                 shadowColor: "#000",
                 elevation: 5,
+                flex: 0.5,
+                marginRight: wp(10),
               }}
               onPress={() => navigation.replace("LoginScreen")}
             />
             <Button
               title={"Register"}
               color={"#FFFFFF"}
-              buttonStyle={{
-                width: wp(20),
-              }}
               containerStyle={{
                 borderRadius: wp(2),
                 shadowColor: "#000",
                 elevation: 5,
+                flex: 0.5,
               }}
               titleStyle={{
                 fontSize: hp(1.8),
