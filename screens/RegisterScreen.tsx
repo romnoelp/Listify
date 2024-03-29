@@ -1,14 +1,163 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import { loadFont } from "../loadFont";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { loginScreenLogo } from "../loadSVG";
+import { SvgXml } from "react-native-svg";
+import { Button } from "@rneui/base";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MainStackParamList } from "../types";
 
-const RegisterScreen = () => {
+type LoginScreenNavigationProp = StackNavigationProp<
+  MainStackParamList,
+  "LoginScreen"
+>;
+
+type Props = {
+  navigation: LoginScreenNavigationProp;
+};
+
+const RegisterScreen = ({ navigation }: Props) => {
+  const [fontLoaded, setFontLoaded] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    loadFont().then(() => setFontLoaded(true));
+  }, []);
+
+  if (!fontLoaded) {
+    return null;
+  }
+
+  const hanleLoginPress = () => {
+    navigation.replace("LoginScreen");
+  };
+
   return (
-    <View>
-      <Text>RegisterScreen</Text>
+    <View style={styles.mainContainer}>
+      <View style={styles.headerContainer}>
+        <SvgXml xml={loginScreenLogo} style={styles.logo} />
+        <Text style={styles.logoTitle}>Listify</Text>
+      </View>
+      <View style={styles.textInputContainer}>
+        <TextInput
+          style={styles.inputField}
+          onChangeText={(text) => setName(text)}
+          value={name}
+          placeholder="Name"
+          placeholderTextColor="#8F8F8F"
+        />
+        <TextInput
+          style={styles.inputField}
+          onChangeText={(text) => setEmail(text)}
+          value={email}
+          placeholder="Email"
+          placeholderTextColor="#8F8F8F"
+        />
+        <TextInput
+          style={styles.inputField}
+          onChangeText={(text) => setPassword(text)}
+          value={password}
+          placeholder="Password"
+          placeholderTextColor="#8F8F8F"
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button
+          title={"Register"}
+          color={"#414042"}
+          titleStyle={{ fontSize: hp(1.8), fontFamily: "kodchasan-light" }}
+          buttonStyle={{
+            height: hp(6),
+          }}
+          containerStyle={{
+            borderRadius: wp(3),
+            width: wp(30),
+            height: hp(6),
+            elevation: 5,
+          }}
+          onPress={() => navigation.replace("RegisterScreen")}
+        />
+      </View>
+      <View style={{ flexDirection: "row" }}>
+        <Text
+          style={{
+            fontFamily: "kodchasan-regular",
+            fontSize: wp(3.5),
+            marginTop: hp(20),
+            marginBottom: hp(8),
+          }}
+        >
+          Already have an account?{" "}
+          <TouchableOpacity onPress={hanleLoginPress}>
+            <Text style={styles.registerText}>Login here!</Text>
+          </TouchableOpacity>
+        </Text>
+      </View>
     </View>
-  )
-}
+  );
+};
 
-export default RegisterScreen
+export default RegisterScreen;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  buttonContainer: {},
+  mainContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+  },
+  headerContainer: {
+    marginTop: hp(20),
+    alignContent: "center",
+    justifyContent: "center",
+  },
+  logo: {
+    paddingBottom: hp(10),
+  },
+  logoTitle: {
+    fontFamily: "kodchasan-bold",
+    fontSize: wp(6.5),
+    color: "#414042",
+    alignSelf: "center",
+  },
+  textInputContainer: {
+    fontFamily: "kodchasan-light",
+    fontSize: wp(4),
+    color: "#414042",
+    alignSelf: "center",
+    padding: hp(2),
+  },
+  inputField: {
+    fontFamily: "kodchasan-semibold",
+    width: wp("65%"),
+    height: hp(6),
+    borderWidth: wp(0.3),
+    borderColor: "#414042",
+    borderRadius: wp("2.5%"),
+    marginTop: hp("3%"),
+    marginHorizontal: wp(4),
+    paddingHorizontal: wp("4%"),
+    paddingVertical: hp("1%"),
+    backgroundColor: "#FFFFFF",
+    fontSize: wp("4%"),
+  },
+  registerText: {
+    fontFamily: "kodchasan-medium",
+    fontSize: wp(3.5),
+    color: "#414042",
+    lineHeight: hp(3.5),
+  },
+});
