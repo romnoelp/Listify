@@ -25,8 +25,7 @@ const LandingScreen = ({ navigation }: Props) => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   useEffect(() => {
     if (!isFontLoaded) {
-      loadFont();
-      setIsFontLoaded(true);
+      loadFont().then(() => setIsFontLoaded(true));
     }
   });
   return (
@@ -111,7 +110,9 @@ const LandingScreen = ({ navigation }: Props) => {
           </View>
         </View>
       ) : (
-        <View>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <Text>Loading</Text>
         </View>
       )}
