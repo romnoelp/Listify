@@ -38,7 +38,7 @@ const MainTopTab = () => {
           },
           tabBarStyle: {
             borderBottomColor: "#414042",
-            borderBottomWidth: wp(0.2),
+            borderBottomWidth: wp(0.3),
           },
           tabBarIndicator: () => <></>,
         }}
@@ -55,6 +55,7 @@ const MainTopTab = () => {
           tabBarStyle: {
             borderBottomColor: "#414042",
             borderBottomWidth: wp(0.2),
+            width: "100%",
           },
           tabBarIndicator: () => <></>,
         }}
