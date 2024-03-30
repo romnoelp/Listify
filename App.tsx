@@ -19,6 +19,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { Entypo } from "@expo/vector-icons";
+import SplashScreen from "./screens/SplashScreen";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 const TopNavigator = createMaterialTopTabNavigator<MainTopTabParamlist>();
@@ -103,13 +104,14 @@ const App = () => {
   }, []);
   return (
     <NavigationContainer>
-      <MainStack.Navigator initialRouteName="LandingScreen">
+      <MainStack.Navigator initialRouteName="SplashScreen">
         <MainStack.Screen
           name="LandingScreen"
           component={LandingScreen}
           options={{ headerShown: false }}
         />
         <MainStack.Screen name="LoginScreen" component={LoginScreen} />
+        <MainStack.Screen name="SplashScreen" component={SplashScreen} />
         <MainStack.Screen name="RegisterScreen" component={RegisterScreen} />
         <MainStack.Screen
           name="MainTopTab"

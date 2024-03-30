@@ -122,7 +122,7 @@ const RegisterScreen = ({ navigation }: Props) => {
           style={styles.inputField}
           onChangeText={(text) => setName(text)}
           value={name}
-          placeholder="Name"
+          placeholder="Username"
           placeholderTextColor="#8F8F8F"
         />
         <TextInput
