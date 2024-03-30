@@ -16,14 +16,16 @@ import { SvgXml } from "react-native-svg";
 import { Button } from "@rneui/base";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MainStackParamList } from "../types";
+import { auth, db } from "../firebaseConfig";
+import Toast from "react-native-simple-toast";
 
-type LoginScreenNavigationProp = StackNavigationProp<
+type RegisterScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
-  "LoginScreen"
+  "RegisterScreen"
 >;
 
 type Props = {
-  navigation: LoginScreenNavigationProp;
+  navigation: RegisterScreenNavigationProp;
 };
 
 const RegisterScreen = ({ navigation }: Props) => {
@@ -32,18 +34,17 @@ const RegisterScreen = ({ navigation }: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordMatch, setPasswordMatch] = useState(true);
+  const [passwordMatch, setPasswordMatch] = useState<boolean | undefined>(
+    undefined
+  );
 
+  const isPasswordMatched = () => {
+    return password === confirmPassword;
+  };
   useEffect(() => {
-    loadFont().then(() => setFontLoaded(true));
-  }, []);
-
-  useEffect(() => {
-    if (password !== "" && confirmPassword !== "") {
-      setPasswordMatch(password === confirmPassword);
-    } else {
-      setPasswordMatch(true);
-    }
+    if (!fontLoaded) loadFont().then(() => setFontLoaded(true));
+    if (password.length !== 0 && confirmPassword.length !== 0)
+      setPasswordMatch(isPasswordMatched());
   }, [password, confirmPassword]);
 
   if (!fontLoaded) {
@@ -54,6 +55,62 @@ const RegisterScreen = ({ navigation }: Props) => {
     navigation.replace("LoginScreen");
   };
 
+  const distinctUserName = async (userName: string) => {
+    const userNameSnapshot = await db
+      .collection("users")
+      .where("userName", "==", userName)
+      .get();
+    return userNameSnapshot.empty;
+  };
+  console.log("passwordMatch:, ", passwordMatch);
+
+  const signUp = async () => {
+    try {
+      if (email && name && confirmPassword) {
+        const isUserNameUnique = await distinctUserName(name);
+
+        if (!isUserNameUnique) {
+          Toast.show("Username already taken.", Toast.LONG);
+          return;
+        }
+
+        if (!passwordMatch) {
+          Toast.show("Password does not match", Toast.LONG);
+          return;
+        }
+
+        const userCredential = await auth.createUserWithEmailAndPassword(
+          email,
+          confirmPassword
+        );
+
+        const user = userCredential?.user;
+        if (user) {
+          await user.updateProfile({ displayName: name });
+          await db.collection("users").doc(user.displayName?.toString()).set({
+            userName: user.displayName,
+            email,
+          });
+
+          console.log(user.displayName);
+          Toast.show("Sign Up Successful", Toast.SHORT);
+          navigation.replace("LoginScreen");
+        }
+      } else {
+        Toast.show("Please complete all required fields.", Toast.BOTTOM);
+      }
+    } catch (error) {
+      if ((error as Error).name === "auth/weak-password") {
+        Toast.show("Password must be at least 6 characters", Toast.SHORT);
+      } else {
+        console.error("Error during sign up:", error);
+        Toast.show(
+          "An error occurred during sign up. Please try again later.",
+          Toast.BOTTOM
+        );
+      }
+    }
+  };
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -84,14 +141,17 @@ const RegisterScreen = ({ navigation }: Props) => {
           secureTextEntry
         />
         <TextInput
-          style={[styles.inputField, !passwordMatch && styles.inputFieldError]}
+          style={[
+            styles.inputField,
+            passwordMatch === false && styles.inputFieldError,
+          ]}
           onChangeText={(text) => setConfirmPassword(text)}
           value={confirmPassword}
           placeholder="Confirm password"
           placeholderTextColor="#8F8F8F"
           secureTextEntry
         />
-        {!passwordMatch && (
+        {passwordMatch === false && (
           <Text style={styles.errorText}>Passwords do not match</Text>
         )}
       </View>
@@ -109,7 +169,7 @@ const RegisterScreen = ({ navigation }: Props) => {
             height: hp(6),
             elevation: 5,
           }}
-          onPress={() => navigation.replace("RegisterScreen")}
+          onPress={signUp}
         />
       </View>
       <View style={{ flexDirection: "row", marginTop: hp(10) }}>
