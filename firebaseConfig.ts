@@ -1,22 +1,14 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import {
-  FIREBASE_PROJECT_ID,
-  FIREBASE_API_KEY,
-  FIREBASE_AUTH_DOMAIN,
-  FIREBASE_MESSAGING_SENDER_ID,
-  FIREBSAE_APP_ID,
-  FIREBASE_STORAGE_BUCKET,
-} from "@env";
 
 const firebaseConfig = {
-  apiKey: FIREBASE_API_KEY,
-  authDomain: FIREBASE_AUTH_DOMAIN,
-  projectId: FIREBASE_PROJECT_ID,
-  storageBucket: FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
-  appId: FIREBSAE_APP_ID,
+  apiKey: "AIzaSyD7vjbH7ZQqDYtPdQa0XOdz5kOzWmznDUQ",
+  authDomain: "listify-ef496.firebaseapp.com",
+  projectId: "listify-ef496",
+  storageBucket: "listify-ef496.appspot.com",
+  messagingSenderId: "949069814125",
+  appId: "1:949069814125:web:8f84fb3962c46800102264",
 };
 
 // Initialize Firebase

@@ -16,6 +16,10 @@ import { SvgXml } from "react-native-svg";
 import { Button } from "@rneui/base";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MainStackParamList } from "../types";
+import { auth, db } from "../firebaseConfig";
+import Toast from "react-native-simple-toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CommonActions } from "@react-navigation/native";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -34,6 +38,35 @@ const LoginScreen = ({ navigation }: Props) => {
   useEffect(() => {
     loadFont().then(() => setFontLoaded(true));
   }, []);
+
+  const signIn = async () => {
+    if (userName && password) {
+      try {
+        const docRefEmail = await db.collection("users").doc(userName).get();
+        let userEmail;
+        if (docRefEmail.exists) {
+          userEmail = docRefEmail.data();
+        } else {
+          Toast.show("Error occured try again later.", Toast.SHORT);
+        }
+        if (userEmail) {
+          await auth.signInWithEmailAndPassword(userEmail.email, password);
+          AsyncStorage.setItem("email", userEmail.email);
+          AsyncStorage.setItem("password", password);
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 1,
+              routes: [{ name: "MainTopTab" }],
+            })
+          );
+        }
+      } catch (error) {
+        Toast.show("Error signing in.", Toast.SHORT);
+      }
+    } else {
+      Toast.show("Please enter your credentials to sign in.", Toast.LONG);
+    }
+  };
 
   if (!fontLoaded) {
     return null;
@@ -79,13 +112,18 @@ const LoginScreen = ({ navigation }: Props) => {
             height: hp(6),
             elevation: 5,
           }}
-          onPress={() => navigation.replace("LoginScreen")}
+          onPress={signIn}
         />
       </View>
       <View style={{ flexDirection: "row", marginTop: hp(19) }}>
         <Text style={styles.registerText}>Don't have an account yet? </Text>
         <TouchableOpacity onPress={handleRegisterPress}>
-          <Text style={[styles.registerText, { fontFamily: "kodchasan-bold", marginTop: hp(4.9) }]}>
+          <Text
+            style={[
+              styles.registerText,
+              { fontFamily: "kodchasan-bold", marginTop: hp(4.9) },
+            ]}
+          >
             Register here!
           </Text>
         </TouchableOpacity>
