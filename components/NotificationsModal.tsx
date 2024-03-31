@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: hp(55),
-    marginLeft: wp(13),
+    marginLeft: wp(15),
   },
   button: {
     marginBottom: 10,

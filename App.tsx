@@ -97,8 +97,7 @@ const App = () => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [isNotificationsModalVisible, setIsNotificationsModalVisible] =
     useState(false);
-  const [isOptionsModalVisible, setIsOptionsModalVisible] = useState(false); // State for OptionsModal
-
+  const [isOptionsModalVisible, setIsOptionsModalVisible] = useState(false);
   useEffect(() => {
     if (!isFontLoaded) {
       loadFont().then(() => setIsFontLoaded(true));
