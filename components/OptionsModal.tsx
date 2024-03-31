@@ -33,8 +33,8 @@ const OptionsModal = ({ isVisible, onClose }: NotificationsModalProps) => {
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
-                navigation.navigate("DevelopersScreen" as never);
                 onClose();
+                navigation.navigate("DevelopersScreen" as never);
               }}
             >
               <Text style={styles.buttonText}>Developers</Text>
@@ -42,6 +42,7 @@ const OptionsModal = ({ isVisible, onClose }: NotificationsModalProps) => {
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
+                onClose();
                 navigation.navigate("AboutAppScreen" as never);
               }}
             >

@@ -1,21 +1,21 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native"; 
+import { useNavigation } from "@react-navigation/native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
 const DevelopersScreen = () => {
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
 
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.header}>
         <TouchableOpacity
           style={{ marginTop: hp(3) }}
-          onPress={() => navigation.goBack()} 
+          onPress={() => navigation.goBack()}
         >
           <Entypo name="chevron-left" size={24} color="#333333" />
         </TouchableOpacity>
