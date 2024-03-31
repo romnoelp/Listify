@@ -28,8 +28,9 @@ const AboutAppScreen = () => {
             marginHorizontal: wp(1),
             marginVertical: hp(1),
             fontFamily: "kodchasan-regular",
-            lineHeight: hp(3),
+            lineHeight: hp(3.5),
             textAlign: "justify",
+            fontSize: hp(2.2),
           }}
         >
           Introducing Listify: the minimalist to-do list app designed to
@@ -42,8 +43,7 @@ const AboutAppScreen = () => {
           for both Android and iOS, Listify offers a seamless cross-platform
           experience, allowing you to stay productive no matter where you are.
           Say goodbye to cluttered interfaces and overwhelming to-do lists.
-          Embrace simplicity and efficiency with Listify. Download now and take
-          control of your productivity.
+          Embrace simplicity and efficiency with Listify.
         </Text>
       </View>
     </View>

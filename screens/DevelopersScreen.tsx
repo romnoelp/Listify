@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import { Entypo } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native"; // Import useNavigation hook
+import { useNavigation } from "@react-navigation/native"; 
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
 const DevelopersScreen = () => {
-  const navigation = useNavigation(); // Initialize navigation
+  const navigation = useNavigation(); 
 
   return (
     <View style={{ flex: 1 }}>

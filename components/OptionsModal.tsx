@@ -12,20 +12,13 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { NotificationsModalProps } from "../types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { auth } from "../firebaseConfig";
 
-const OptionsModal = ({
-  isVisible,
-  onClose,
-  navigateTo,
-}: NotificationsModalProps) => {
+const OptionsModal = ({ isVisible, onClose }: NotificationsModalProps) => {
   const navigation = useNavigation();
-
-  const handleOptionPress = () => {
-    onClose(); 
-    navigation.navigate(navigateTo as never); 
-  };
 
   return (
     <Modal
@@ -39,19 +32,34 @@ const OptionsModal = ({
           <View style={styles.modal}>
             <TouchableOpacity
               style={styles.button}
-              onPress={handleOptionPress} 
+              onPress={() => {
+                navigation.navigate("DevelopersScreen" as never);
+                onClose();
+              }}
             >
               <Text style={styles.buttonText}>Developers</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
-              onPress={handleOptionPress}
+              onPress={() => {
+                navigation.navigate("AboutAppScreen" as never);
+              }}
             >
               <Text style={styles.buttonText}>About the app</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => console.log("Logout")}
+              onPress={() => {
+                auth.signOut();
+                AsyncStorage.clear();
+                onClose();
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 1,
+                    routes: [{ name: "LandingScreen" }],
+                  })
+                );
+              }}
             >
               <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>

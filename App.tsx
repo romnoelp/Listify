@@ -19,6 +19,8 @@ import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { MainStackParamList, MainTopTabParamlist } from "./types";
 import DevelopersScreen from "./screens/DevelopersScreen";
 import AboutAppScreen from "./screens/AboutAppScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -121,6 +123,16 @@ const App = () => {
         <MainStack.Screen
           name="LandingScreen"
           component={LandingScreen}
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+          name="LoginScreen"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+          name="RegisterScreen"
+          component={RegisterScreen}
           options={{ headerShown: false }}
         />
         <MainStack.Screen
