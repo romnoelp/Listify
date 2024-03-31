@@ -15,15 +15,17 @@ import {
 import DevelopersScreen from "../screens/DevelopersScreen";
 import { useNavigation } from "@react-navigation/native";
 
-interface NotificationsModalProps {
+type NotificationsModalProps = {
   isVisible: boolean;
   onClose: () => void;
-}
+  navigateTo: String;
+};
 
-const OptionsModal: React.FC<NotificationsModalProps> = ({
+const OptionsModal = ({
   isVisible,
   onClose,
-}) => {
+  navigateTo,
+}: NotificationsModalProps) => {
   const navigation = useNavigation();
   return (
     <Modal
@@ -37,7 +39,7 @@ const OptionsModal: React.FC<NotificationsModalProps> = ({
           <View style={styles.modal}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate("DevelopersScreen")}
+              onPress={() => navigation.navigate(navigateTo as never)}
             >
               <Text style={styles.buttonText}>Developers</Text>
             </TouchableOpacity>
