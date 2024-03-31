@@ -1,28 +1,23 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import LoginScreen from "./screens/LoginScreen";
-import RegisterScreen from "./screens/RegisterScreen";
+import { Entypo } from "@expo/vector-icons";
 import LandingScreen from "./screens/LandingScreen";
-import { MainStackParamList, MainTopTabParamlist } from "./types";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import SplashScreen from "./screens/SplashScreen";
 import TaskScreen from "./screens/TaskScreen";
-import OngoingScreen from "./screens/OngoingScreen";
-import OverdueScreen from "./screens/OverdueScreen";
-import CompletedScreen from "./screens/CompletedScreen";
 import { loadFont } from "./loadFont";
 import { SvgXml } from "react-native-svg";
 import { landingScreenLogo } from "./loadSVG";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
-import { Entypo } from "@expo/vector-icons";
-import SplashScreen from "./screens/SplashScreen";
+import NotificationsModal from "./components/NotificationsModal";
+import OptionsModal from "./components/OptionsModal"; 
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import OngoingScreen from "./screens/OngoingScreen";
+import OverdueScreen from "./screens/OverdueScreen";
+import CompletedScreen from "./screens/CompletedScreen";
+import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
-const MainStack = createNativeStackNavigator<MainStackParamList>();
-const TopNavigator = createMaterialTopTabNavigator<MainTopTabParamlist>();
+const MainStack = createNativeStackNavigator();
 
 const MainTopTab = () => {
   return (
@@ -96,13 +91,28 @@ const MainTopTab = () => {
   );
 };
 
+const TopNavigator = createMaterialTopTabNavigator();
+
 const App = () => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
+  const [isNotificationsModalVisible, setIsNotificationsModalVisible] =
+    useState(false);
+  const [isOptionsModalVisible, setIsOptionsModalVisible] = useState(false); // State for OptionsModal
+
   useEffect(() => {
     if (!isFontLoaded) {
       loadFont().then(() => setIsFontLoaded(true));
     }
   }, []);
+
+  const toggleNotificationsModal = () => {
+    setIsNotificationsModalVisible(!isNotificationsModalVisible);
+  };
+
+  const toggleOptionsModal = () => {
+    setIsOptionsModalVisible(!isOptionsModalVisible);
+  };
+
   return (
     <NavigationContainer>
       <MainStack.Navigator initialRouteName="SplashScreen">
@@ -111,9 +121,7 @@ const App = () => {
           component={LandingScreen}
           options={{ headerShown: false }}
         />
-        <MainStack.Screen name="LoginScreen" component={LoginScreen} />
         <MainStack.Screen name="SplashScreen" component={SplashScreen} />
-        <MainStack.Screen name="RegisterScreen" component={RegisterScreen} />
         <MainStack.Screen
           name="MainTopTab"
           component={MainTopTab}
@@ -131,15 +139,11 @@ const App = () => {
               />
             ),
             headerRight: () => (
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <TouchableOpacity style={{ marginRight: wp(4) }}>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity onPress={toggleNotificationsModal} style={{ marginRight: wp(4) }}>
                   <Entypo name="bell" size={26} color="black" />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={toggleOptionsModal}>
                   <Entypo name="dots-three-vertical" size={24} color="black" />
                 </TouchableOpacity>
               </View>
@@ -147,6 +151,14 @@ const App = () => {
           }}
         />
       </MainStack.Navigator>
+      <NotificationsModal
+        isVisible={isNotificationsModalVisible}
+        onClose={toggleNotificationsModal}
+      />
+      <OptionsModal
+        isVisible={isOptionsModalVisible}
+        onClose={toggleOptionsModal}
+      />
     </NavigationContainer>
   );
 };
