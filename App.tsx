@@ -18,6 +18,7 @@ import CompletedScreen from "./screens/CompletedScreen";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { MainStackParamList, MainTopTabParamlist } from "./types";
 import DevelopersScreen from "./screens/DevelopersScreen";
+import AboutAppScreen from "./screens/AboutAppScreen";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -122,7 +123,11 @@ const App = () => {
           component={LandingScreen}
           options={{ headerShown: false }}
         />
-        <MainStack.Screen name="SplashScreen" component={SplashScreen} />
+        <MainStack.Screen
+          name="SplashScreen"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
         <MainStack.Screen
           name="MainTopTab"
           component={MainTopTab}
@@ -157,6 +162,12 @@ const App = () => {
         <MainStack.Screen
           name="DevelopersScreen"
           component={DevelopersScreen}
+          options={{ headerShown: false }}
+        />
+        <MainStack.Screen
+          name="AboutAppScreen"
+          component={AboutAppScreen}
+          options={{ headerShown: false }}
         />
       </MainStack.Navigator>
       <NotificationsModal
@@ -166,7 +177,7 @@ const App = () => {
       <OptionsModal
         isVisible={isOptionsModalVisible}
         onClose={toggleOptionsModal}
-        navigateTo={"DevelopersScreen"}
+        navigateTo={"AboutAppScreen"}
       />
     </NavigationContainer>
   );

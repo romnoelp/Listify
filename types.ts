@@ -4,7 +4,14 @@ export type MainStackParamList = {
   RegisterScreen: undefined;
   LandingScreen: undefined;
   MainTopTab: undefined;
-  DeveloperScreen: undefined;
+  DevelopersScreen: undefined;
+  AboutAppScreen: undefined;
+};
+
+export type NotificationsModalProps = {
+  isVisible: boolean;
+  onClose: () => void;
+  navigateTo ?: String;
 };
 
 export type MainTopTabParamlist = {
@@ -13,3 +20,5 @@ export type MainTopTabParamlist = {
   OverdueScreen: undefined;
   CompletedScreen: undefined;
 };
+
+

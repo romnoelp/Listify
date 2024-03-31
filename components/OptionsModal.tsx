@@ -12,14 +12,8 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
-import DevelopersScreen from "../screens/DevelopersScreen";
 import { useNavigation } from "@react-navigation/native";
-
-type NotificationsModalProps = {
-  isVisible: boolean;
-  onClose: () => void;
-  navigateTo: String;
-};
+import { NotificationsModalProps } from "../types";
 
 const OptionsModal = ({
   isVisible,
@@ -27,6 +21,12 @@ const OptionsModal = ({
   navigateTo,
 }: NotificationsModalProps) => {
   const navigation = useNavigation();
+
+  const handleOptionPress = () => {
+    onClose(); 
+    navigation.navigate(navigateTo as never); 
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -39,13 +39,13 @@ const OptionsModal = ({
           <View style={styles.modal}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate(navigateTo as never)}
+              onPress={handleOptionPress} 
             >
               <Text style={styles.buttonText}>Developers</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => console.log("About the app")}
+              onPress={handleOptionPress}
             >
               <Text style={styles.buttonText}>About the app</Text>
             </TouchableOpacity>

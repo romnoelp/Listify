@@ -11,16 +11,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { NotificationsModalProps } from "../types";
 
-interface NotificationsModalProps {
-  isVisible: boolean;
-  onClose: () => void;
-}
-
-const NotificationsModal: React.FC<NotificationsModalProps> = ({
+const NotificationsModal = ({
   isVisible,
   onClose,
-}) => {
+}: NotificationsModalProps) => {
   return (
     <Modal
       animationType="fade"
