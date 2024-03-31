@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
@@ -10,14 +10,16 @@ import { loadFont } from "./loadFont";
 import { SvgXml } from "react-native-svg";
 import { landingScreenLogo } from "./loadSVG";
 import NotificationsModal from "./components/NotificationsModal";
-import OptionsModal from "./components/OptionsModal"; 
+import OptionsModal from "./components/OptionsModal";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import OngoingScreen from "./screens/OngoingScreen";
 import OverdueScreen from "./screens/OverdueScreen";
 import CompletedScreen from "./screens/CompletedScreen";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import { MainStackParamList, MainTopTabParamlist } from "./types";
+import DevelopersScreen from "./screens/DevelopersScreen";
 
-const MainStack = createNativeStackNavigator();
+const MainStack = createNativeStackNavigator<MainStackParamList>();
 
 const MainTopTab = () => {
   return (
@@ -91,7 +93,7 @@ const MainTopTab = () => {
   );
 };
 
-const TopNavigator = createMaterialTopTabNavigator();
+const TopNavigator = createMaterialTopTabNavigator<MainTopTabParamlist>();
 
 const App = () => {
   const [isFontLoaded, setIsFontLoaded] = useState(false);
@@ -139,7 +141,10 @@ const App = () => {
             ),
             headerRight: () => (
               <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity onPress={toggleNotificationsModal} style={{ marginRight: wp(4) }}>
+                <TouchableOpacity
+                  onPress={toggleNotificationsModal}
+                  style={{ marginRight: wp(4) }}
+                >
                   <Entypo name="bell" size={26} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={toggleOptionsModal}>
@@ -149,6 +154,10 @@ const App = () => {
             ),
           }}
         />
+        <MainStack.Screen
+          name="DevelopersScreen"
+          component={DevelopersScreen}
+        />
       </MainStack.Navigator>
       <NotificationsModal
         isVisible={isNotificationsModalVisible}
@@ -157,6 +166,7 @@ const App = () => {
       <OptionsModal
         isVisible={isOptionsModalVisible}
         onClose={toggleOptionsModal}
+        navigateTo={"DevelopersScreen"}
       />
     </NavigationContainer>
   );

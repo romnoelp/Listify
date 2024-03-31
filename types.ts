@@ -4,6 +4,7 @@ export type MainStackParamList = {
   RegisterScreen: undefined;
   LandingScreen: undefined;
   MainTopTab: undefined;
+  DeveloperScreen: undefined;
 };
 
 export type MainTopTabParamlist = {
