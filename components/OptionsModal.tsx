@@ -57,7 +57,7 @@ const OptionsModal = ({ isVisible, onClose }: NotificationsModalProps) => {
                 navigation.dispatch(
                   CommonActions.reset({
                     index: 1,
-                    routes: [{ name: "LandingScreen" }],
+                    routes: [{ name: "LoginScreen" }],
                   })
                 );
               }}

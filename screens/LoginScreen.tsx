@@ -1,25 +1,26 @@
+import React, { useState, useEffect } from "react";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MainStackParamList } from "../types";
+import { SvgXml } from "react-native-svg";
+import { Entypo } from "@expo/vector-icons";
+import { Button } from "@rneui/base";
+import {
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import Toast from "react-native-simple-toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CommonActions } from "@react-navigation/native";
+import { auth, db } from "../firebaseConfig";
+import { loginScreenLogo } from "../loadSVG";
+import { loadFont } from "../loadFont";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { loadFont } from "../loadFont";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import React, { useState, useEffect } from "react";
-import { loginScreenLogo } from "../loadSVG";
-import { SvgXml } from "react-native-svg";
-import { Button } from "@rneui/base";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { MainStackParamList } from "../types";
-import { auth, db } from "../firebaseConfig";
-import Toast from "react-native-simple-toast";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CommonActions } from "@react-navigation/native";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -34,6 +35,7 @@ const LoginScreen = ({ navigation }: Props) => {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     loadFont().then(() => setFontLoaded(true));
@@ -47,7 +49,7 @@ const LoginScreen = ({ navigation }: Props) => {
         if (docRefEmail.exists) {
           userEmail = docRefEmail.data();
         } else {
-          Toast.show("Error occured try again later.", Toast.SHORT);
+          Toast.show("Error occurred, please try again later.", Toast.SHORT);
         }
         if (userEmail) {
           await auth.signInWithEmailAndPassword(userEmail.email, password);
@@ -73,7 +75,7 @@ const LoginScreen = ({ navigation }: Props) => {
   }
 
   const handleRegisterPress = () => {
-    navigation.replace("RegisterScreen"); // Navigate to the RegisterScreen
+    navigation.replace("RegisterScreen");
   };
 
   return (
@@ -90,13 +92,26 @@ const LoginScreen = ({ navigation }: Props) => {
           placeholder="Username"
           placeholderTextColor="#8F8F8F"
         />
-        <TextInput
-          style={styles.inputField}
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          placeholder="Password"
-          placeholderTextColor="#8F8F8F"
-        />
+        <View style={{ position: "relative" }}>
+          <TextInput
+            style={styles.inputField}
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            placeholder="Password"
+            placeholderTextColor="#8F8F8F"
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={{ position: "absolute", right: wp(7), top: hp(5) }}
+          >
+            <Entypo
+              name={showPassword ? "eye" : "eye-with-line"}
+              size={24}
+              color="#414042"
+            />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.buttonContainer}>
         <Button

@@ -1,23 +1,24 @@
+import React, { useState, useEffect } from "react";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MainStackParamList } from "../types";
+import { SvgXml } from "react-native-svg";
+import { Entypo } from "@expo/vector-icons";
+import { Button } from "@rneui/base";
+import {
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import Toast from "react-native-simple-toast";
+import { auth, db } from "../firebaseConfig";
+import { loginScreenLogo } from "../loadSVG";
+import { loadFont } from "../loadFont";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { loadFont } from "../loadFont";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
-import React, { useState, useEffect } from "react";
-import { loginScreenLogo } from "../loadSVG";
-import { SvgXml } from "react-native-svg";
-import { Button } from "@rneui/base";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { MainStackParamList } from "../types";
-import { auth, db } from "../firebaseConfig";
-import Toast from "react-native-simple-toast";
 
 type RegisterScreenNavigationProp = StackNavigationProp<
   MainStackParamList,
@@ -37,10 +38,13 @@ const RegisterScreen = ({ navigation }: Props) => {
   const [passwordMatch, setPasswordMatch] = useState<boolean | undefined>(
     undefined
   );
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const isPasswordMatched = () => {
     return password === confirmPassword;
   };
+
   useEffect(() => {
     if (!fontLoaded) loadFont().then(() => setFontLoaded(true));
     if (password.length !== 0 && confirmPassword.length !== 0)
@@ -62,7 +66,6 @@ const RegisterScreen = ({ navigation }: Props) => {
       .get();
     return userNameSnapshot.empty;
   };
-  console.log("passwordMatch:, ", passwordMatch);
 
   const signUp = async () => {
     try {
@@ -83,8 +86,8 @@ const RegisterScreen = ({ navigation }: Props) => {
           email,
           confirmPassword
         );
-
         const user = userCredential?.user;
+
         if (user) {
           await user.updateProfile({ displayName: name });
           await db.collection("users").doc(user.displayName?.toString()).set({
@@ -92,7 +95,6 @@ const RegisterScreen = ({ navigation }: Props) => {
             email,
           });
 
-          console.log(user.displayName);
           Toast.show("Sign Up Successful", Toast.SHORT);
           navigation.replace("LoginScreen");
         }
@@ -111,6 +113,7 @@ const RegisterScreen = ({ navigation }: Props) => {
       }
     }
   };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -132,25 +135,49 @@ const RegisterScreen = ({ navigation }: Props) => {
           placeholder="Email"
           placeholderTextColor="#8F8F8F"
         />
-        <TextInput
-          style={styles.inputField}
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          placeholder="Password"
-          placeholderTextColor="#8F8F8F"
-          secureTextEntry
-        />
-        <TextInput
-          style={[
-            styles.inputField,
-            passwordMatch === false && styles.inputFieldError,
-          ]}
-          onChangeText={(text) => setConfirmPassword(text)}
-          value={confirmPassword}
-          placeholder="Confirm password"
-          placeholderTextColor="#8F8F8F"
-          secureTextEntry
-        />
+        <View style={{ position: "relative" }}>
+          <TextInput
+            style={styles.inputField}
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            placeholder="Password"
+            placeholderTextColor="#8F8F8F"
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={{ position: "absolute", right: wp(7), top: hp(5) }}
+          >
+            <Entypo
+              name={showPassword ? "eye" : "eye-with-line"}
+              size={24}
+              color="#414042"
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={{ position: "relative" }}>
+          <TextInput
+            style={[
+              styles.inputField,
+              passwordMatch === false && styles.inputFieldError,
+            ]}
+            onChangeText={(text) => setConfirmPassword(text)}
+            value={confirmPassword}
+            placeholder="Confirm password"
+            placeholderTextColor="#8F8F8F"
+            secureTextEntry={!showConfirmPassword}
+          />
+          <TouchableOpacity
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+            style={{ position: "absolute", right: wp(7), top: hp(5) }}
+          >
+            <Entypo
+              name={showConfirmPassword ? "eye" : "eye-with-line"}
+              size={24}
+              color="#414042"
+            />
+          </TouchableOpacity>
+        </View>
         {passwordMatch === false && (
           <Text style={styles.errorText}>Passwords do not match</Text>
         )}
@@ -172,7 +199,7 @@ const RegisterScreen = ({ navigation }: Props) => {
           onPress={signUp}
         />
       </View>
-      <View style={{ flexDirection: "row", marginTop: hp(1)}}>
+      <View style={{ flexDirection: "row", marginTop: hp(1) }}>
         <Text style={styles.registerText}>Already have an account? </Text>
         <TouchableOpacity onPress={handleLoginPress}>
           <Text
