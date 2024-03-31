@@ -11,6 +11,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { BlurView } from "expo-blur";
 import { NotificationsModalProps } from "../types";
 
 const NotificationsModal = ({
@@ -25,7 +26,7 @@ const NotificationsModal = ({
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.container}>
+        <BlurView intensity={70} tint="light" style={styles.container}>
           <View style={styles.modal}>
             <TouchableOpacity
               style={styles.button}
@@ -34,7 +35,7 @@ const NotificationsModal = ({
               <Text style={styles.buttonText}>Clear notifications</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </BlurView>
       </TouchableWithoutFeedback>
     </Modal>
   );
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
   },
   modal: {
     backgroundColor: "#414042",
