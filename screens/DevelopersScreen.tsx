@@ -4,7 +4,7 @@ import React from "react";
 const DevelopersScreen = () => {
   return (
     <View>
-      <Text>DevelopersScreen</Text>
+      <Text>INAMOL TOM AND..</Text>
     </View>
   );
 };
