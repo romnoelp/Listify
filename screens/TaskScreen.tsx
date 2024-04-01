@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(3),
     alignItems: "center",
   },
-  statusView: { marginHorizontal: wp(5), paddingHorizontal: wp(5), flex: 1 },
+  statusView: { marginHorizontal: wp(1), paddingHorizontal: wp(5), flex: 1 },
   taskTitle: {
     fontFamily: "kodchasan-light",
     fontSize: hp(2.2),
