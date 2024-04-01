@@ -8,12 +8,6 @@ export type MainStackParamList = {
   AboutAppScreen: undefined;
 };
 
-export type NotificationsModalProps = {
-  isVisible: boolean;
-  onClose: () => void;
-  navigateTo ?: String;
-};
-
 export type MainTopTabParamlist = {
   TaskScreen: undefined;
   OngoingScreen: undefined;
@@ -21,4 +15,10 @@ export type MainTopTabParamlist = {
   CompletedScreen: undefined;
 };
 
-
+export type ToDoTask = {
+  id: String;
+  taskTitle: String;
+  dueDate: Date;
+  taskDescription: String;
+  status: string;
+};

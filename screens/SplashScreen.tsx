@@ -18,7 +18,7 @@ const SplashScreen = ({ navigation }: SplashScreenProps) => {
       try {
         const savedEmail = await AsyncStorage.getItem("email");
         const savedPassword = await AsyncStorage.getItem("password");
-        console.log(savedEmail, savedPassword);
+
         if (savedEmail && savedPassword) {
           await auth.signInWithEmailAndPassword(savedEmail, savedPassword);
           navigation.dispatch(
