@@ -124,6 +124,9 @@ const TaskScreen = () => {
     setIsAddTaskModalVisible(!isAddTaskModalVisible);
     setTaskDescription("");
     setTaskTitle("");
+    setIsMultipleSelect(false);
+    setSelectedIdentifier([]);
+    setSelectedTasks([]);
   };
 
   const enableMultipleSelect = () => {
@@ -134,20 +137,20 @@ const TaskScreen = () => {
     //save task after finishing in addModal
     try {
       if (user && user.displayName) {
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-
         const CurrentDate = new Date();
         const statusCheck = CurrentDate > dueDate ? "OverDue" : "OnGoing";
-        await docRef.add({
-          taskTitle,
-          taskDescription,
-          dueDate: dueDate,
-          status: statusCheck,
-        });
+        const docRef = await db
+          .collection("users")
+          .doc(user.displayName.toString())
+          .collection("Tasks")
+          .add({
+            taskTitle,
+            taskDescription,
+            dueDate: dueDate,
+            status: statusCheck,
+          });
 
+        console.log("docRefId", docRef.id);
         const newTask: ToDoTask = {
           id: docRef.id,
           taskTitle,
@@ -168,9 +171,11 @@ const TaskScreen = () => {
   const handleBackPress = () => {
     //cancels the multiple selection mode when back button was pressed
     setIsMultipleSelect(false);
+    setSelectedIdentifier([]);
+    setSelectedTasks([]);
     return true;
   };
-
+  console.log(TasksList);
   useEffect(() => {
     readData();
     const backPressHandler = BackHandler.addEventListener(
@@ -215,9 +220,13 @@ const TaskScreen = () => {
 
   const deleteItems = async () => {
     if (user && user.displayName) {
+      if (selectedTasks.length === 0) {
+        Toast.show("Select an item/s to delete", Toast.SHORT);
+        return;
+      }
       try {
         const dbRef = db
-          .collection("uesrs")
+          .collection("users")
           .doc(user.displayName.toString())
           .collection("Tasks");
         const batch = db.batch();
@@ -237,6 +246,7 @@ const TaskScreen = () => {
         Toast.show("Items deleted successfully", Toast.SHORT);
         setSelectedTasks([]);
         setSelectedIdentifier([]);
+        setIsMultipleSelect(false);
       } catch (error) {
         Toast.show("Error deleting items, try again later", Toast.SHORT);
       }
