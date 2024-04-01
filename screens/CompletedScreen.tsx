@@ -21,12 +21,6 @@ import { ToDoTask } from "../types";
 import FloatingButton from "../components/FloatingButton";
 
 
-interface Task {
-  id: number;
-  title: string;
-  status: string;
-}
-
 const CompletedScreen = () => {
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
   const [dueDate, setDueDate] = useState(new Date());
@@ -37,10 +31,10 @@ const CompletedScreen = () => {
   const { addTask, TasksList } = useTaskContext();
 
   const user = auth.currentUser;
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: "Complete homework", status: "On Going" },
-    { id: 4, title: "Bebetaym", status: "On Going" },
-  ]);
+  // const [tasks, setTasks] = useState<Task[]>([
+  //   { id: 1, title: "Complete homework", status: "On Going" },
+  //   { id: 4, title: "Bebetaym", status: "On Going" },
+  // ]);
 
   const handleToggleTaskStatus = (id: number) => {
     // Implement logic to change task status
@@ -128,30 +122,25 @@ const CompletedScreen = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: Task }) => (
-    <View style={styles.taskContainer}>
-      <TouchableOpacity onPress={() => handleToggleTaskStatus(item.id)}>
-        {item.status === "Completed" ? (
-          <View style={[styles.checkbox, styles.checkboxCompleted]} />
-        ) : item.status === "Overdue" ? (
-          <View style={[styles.checkbox, styles.checkboxOverdue]} />
-        ) : (
-          <View style={[styles.checkbox, styles.checkboxDefault]} />
-        )}
-      </TouchableOpacity>
-      <Text style={styles.taskText}>{item.title}</Text>
-    </View>
-  );
+  // const renderItem = ({ item }: { item: Task }) => (
+  //   <View style={styles.taskContainer}>
+  //     <TouchableOpacity onPress={() => handleToggleTaskStatus(item.id)}>
+  //       {item.status === "Completed" ? (
+  //         <View style={[styles.checkbox, styles.checkboxCompleted]} />
+  //       ) : item.status === "Overdue" ? (
+  //         <View style={[styles.checkbox, styles.checkboxOverdue]} />
+  //       ) : (
+  //         <View style={[styles.checkbox, styles.checkboxDefault]} />
+  //       )}
+  //     </TouchableOpacity>
+  //     <Text style={styles.taskText}>{item.title}</Text>
+  //   </View>
+  // );
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Completed</Text>
-      <FlatList
-        data={tasks.filter((task) => task.status === "Completed")}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContainer}
-      />
+      
       <View
         style={{
           position: "absolute",
@@ -169,8 +158,9 @@ const CompletedScreen = () => {
             throw new Error(
               "Where's the function, cuh? Define it first, bish."
             );
-          }}
-        ></FloatingButton>
+          } } onCompleteAllItemsPress={function (): void {
+            throw new Error("Function not implemented.");
+          } }        ></FloatingButton>
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}

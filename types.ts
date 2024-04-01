@@ -23,7 +23,7 @@ export type ToDoTask = {
   status: string;
 };
 
-export interface NotificationsModalProps {
+export type NotificationsModalProps = {
   isVisible: boolean;
   onClose: () => void;
 }
