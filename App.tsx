@@ -201,7 +201,6 @@ const App = () => {
         <OptionsModal
           isVisible={isOptionsModalVisible}
           onClose={toggleOptionsModal}
-          navigateTo={"AboutAppScreen"}
         />
       </NavigationContainer>
     </ToDoTaskProvider>

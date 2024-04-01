@@ -15,6 +15,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { BlurView } from "expo-blur";
 
 type AddModalProps = {
   isAddTaskModalVisible: boolean;
@@ -52,6 +53,7 @@ const AddModal = ({
   closeAddTaskModal,
 }: AddModalProps) => {
   return (
+    
     <Modal
       visible={isAddTaskModalVisible}
       onRequestClose={() => closeAddTaskModal()}
@@ -176,6 +178,8 @@ const AddModal = ({
           />
         )}
       </View>
+      <BlurView intensity={100} tint="light" style={{flex: 1}}>
+      </BlurView>
     </Modal>
   );
 };

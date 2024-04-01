@@ -22,3 +22,8 @@ export type ToDoTask = {
   taskDescription: String;
   status: string;
 };
+
+export interface NotificationsModalProps {
+  isVisible: boolean;
+  onClose: () => void;
+}

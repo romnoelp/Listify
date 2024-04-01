@@ -20,6 +20,7 @@ import { auth, db } from "../firebaseConfig";
 import { ToDoTask } from "../types";
 import { useTaskContext } from "../context/toDoTaskContext";
 import Toast from "react-native-simple-toast";
+import FloatingButton from "../components/FloatingButton";
 
 interface Task {
   id: number;
@@ -160,16 +161,15 @@ const TaskScreen = () => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity
-          style={{
-            padding: wp(3),
-            borderRadius: wp(8),
-            backgroundColor: "#414042",
+        {/*Change to the floating button rotation shit  */}
+        <FloatingButton
+          onAddItemsPress={() => setIsAddTaskModalVisible(true)}
+          onDeleteAllItemsPress={function (): void {
+            throw new Error(
+              "Where's the function, cuh? Define it first, bish."
+            );
           }}
-          onPress={() => setIsAddTaskModalVisible(true)}
-        >
-          <Entypo name="plus" size={24} color="white" />
-        </TouchableOpacity>
+        ></FloatingButton>
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}

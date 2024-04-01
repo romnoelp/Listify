@@ -11,6 +11,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { SvgXml } from "react-native-svg";
+import { landingScreenLogo, mainButtonLogo } from "../loadSVG";
 
 interface Props {
   onDeleteAllItemsPress: () => void;
@@ -41,7 +43,31 @@ const FloatingButton: React.FC<Props> = ({
       {
         translateY: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -70],
+          outputRange: [0, -10],
+        }),
+      },
+      {
+        translateX: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 100], 
+        }),
+      },
+    ],
+  };
+
+  const finishAllItemStyle = {
+    transform: [
+      { scale: animation },
+      {
+        translateY: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, -10],
+        }),
+      },
+      {
+        translateX: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, -100],
         }),
       },
     ],
@@ -53,7 +79,7 @@ const FloatingButton: React.FC<Props> = ({
       {
         translateY: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -130],
+          outputRange: [0, -70],
         }),
       },
     ],
@@ -65,7 +91,7 @@ const FloatingButton: React.FC<Props> = ({
     transform: [
       {
         rotate: animation.interpolate({
-          inputRange: [0, 1],
+          inputRange: [0,1.2],
           outputRange: ["0deg", "180deg"],
         }),
       },
@@ -86,8 +112,19 @@ const FloatingButton: React.FC<Props> = ({
           <Entypo name="trash" size={25} color="#EBF7F9" />
         </Animated.View>
       </TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={() => onDeleteAllItemsPress()}>
+        <Animated.View
+          style={[
+            styles.button,
+            styles.secondary,
+            styles.menu,
+            finishAllItemStyle,
+          ]}
+        >
+          <Entypo name="flag" size={25} color="#EBF7F9" />
+        </Animated.View>
+      </TouchableWithoutFeedback>
 
-      
       <TouchableWithoutFeedback onPress={() => onAddItemsPress()}>
         <Animated.View
           style={[styles.button, styles.secondary, styles.menu, addItemStyle]}
@@ -98,7 +135,7 @@ const FloatingButton: React.FC<Props> = ({
 
       <TouchableWithoutFeedback onPress={toggleMenu}>
         <Animated.View style={[styles.button, styles.menu, rotation]}>
-          <AntDesign name="caretdown" size={25} color="#EBF7F9" />
+          <SvgXml xml={mainButtonLogo} />
         </Animated.View>
       </TouchableWithoutFeedback>
     </View>
@@ -116,8 +153,9 @@ const styles = StyleSheet.create({
   },
   button: {
     position: "absolute",
-    width: hp("6%"),
-    height: hp("6%"),
+    top: hp(2),
+    width: hp("7%"),
+    height: hp("7%"),
     borderRadius: hp("20"),
     alignItems: "center",
     justifyContent: "center",
