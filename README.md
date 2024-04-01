@@ -18,7 +18,7 @@
       </div>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
-      <img src="./devImages/Rom.jpg" width="200" height="200" style="margin: 10px;">
+      <img src="./devImages/Rich.jpg" width="200" height="200" style="margin: 10px;">
       <div style="text-align: center;">
         <b>Richmond Baltazar</b><br>
         <b>Role:</b> Lead Programmer<br>
@@ -26,7 +26,7 @@
       </div>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
-      <img src="./devImages/Rom.jpg" width="200" height="200" style="margin: 10px;">
+      <img src="./devImages/Kevs.jpg" width="200" height="200" style="margin: 10px;">
       <div style="text-align: center;">
         <b>Kevin Ros Lisboa</b><br>
         <b>Role:</b> Programmer<br>
