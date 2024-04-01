@@ -11,22 +11,15 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import { NotificationsModalProps } from "../types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { auth } from "../firebaseConfig";
+import { BlurView } from "expo-blur";
 
-import DevelopersScreen from "../screens/DevelopersScreen";
-import { useNavigation } from "@react-navigation/native";
-
-type NotificationsModalProps = {
-  isVisible: boolean;
-  onClose: () => void;
-  navigateTo: String;
-};
-
-const OptionsModal = ({
-  isVisible,
-  onClose,
-  navigateTo,
-}: NotificationsModalProps) => {
+const OptionsModal = ({ isVisible, onClose }: NotificationsModalProps) => {
   const navigation = useNavigation();
+
   return (
     <Modal
       animationType="fade"
@@ -35,28 +28,44 @@ const OptionsModal = ({
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.container}>
+        <BlurView intensity={70} tint="light" style={styles.container}>
           <View style={styles.modal}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate(navigateTo as never)}
+              onPress={() => {
+                onClose();
+                navigation.navigate("DevelopersScreen" as never);
+              }}
             >
               <Text style={styles.buttonText}>Developers</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => console.log("About the app")}
+              onPress={() => {
+                onClose();
+                navigation.navigate("AboutAppScreen" as never);
+              }}
             >
               <Text style={styles.buttonText}>About the app</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => console.log("Logout")}
+              onPress={() => {
+                auth.signOut();
+                AsyncStorage.clear();
+                onClose();
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 1,
+                    routes: [{ name: "LoginScreen" }],
+                  })
+                );
+              }}
             >
               <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </BlurView>
       </TouchableWithoutFeedback>
     </Modal>
   );
@@ -67,17 +76,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(255, 255, 255, .5)",
   },
   modal: {
     backgroundColor: "#414042",
-    width: wp(60),
+    width: wp(50),
     borderRadius: 40,
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: hp(62),
-    marginLeft: wp(28),
+    marginLeft: wp(38),
   },
   button: {
     marginBottom: 10,

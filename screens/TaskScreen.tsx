@@ -58,7 +58,15 @@ const TaskScreen = () => {
 
   const renderItem = ({ item }: { item: Task }) => (
     <View style={styles.taskContainer}>
-      <Text style={styles.bulletPoint}>•</Text>
+      <TouchableOpacity>
+        {item.status === "Completed" ? (
+          <View style={[styles.checkbox, styles.checkboxCompleted]} />
+        ) : item.status === "Overdue" ? (
+          <View style={[styles.checkbox, styles.checkboxOverdue]} />
+        ) : (
+          <View style={[styles.checkbox, styles.checkboxDefault]} />
+        )}
+      </TouchableOpacity>
       <Text style={styles.taskText}>{item.title}</Text>
     </View>
   );
@@ -143,7 +151,7 @@ const TaskScreen = () => {
   return (
     <View style={styles.mainContainer}>
       {groupedTasks["On Going"] && (
-        <View style={styles.headerContainer}>
+        <View>
           <Text style={styles.headerText}>On Going</Text>
         </View>
       )}
@@ -157,7 +165,7 @@ const TaskScreen = () => {
       )}
       <View style={styles.headerUnderline}></View>
       {groupedTasks["Overdue"] && (
-        <View style={styles.headerContainer}>
+        <View>
           <Text style={styles.headerText}>Overdue</Text>
         </View>
       )}
@@ -171,7 +179,7 @@ const TaskScreen = () => {
       )}
       {groupedTasks["Overdue"] && <View style={styles.headerUnderline}></View>}
       {groupedTasks["Completed"] && (
-        <View style={styles.headerContainer}>
+        <View>
           <Text style={styles.headerText}>Completed</Text>
         </View>
       )}
@@ -233,27 +241,23 @@ const styles = StyleSheet.create({
   headerContainer: {},
   headerText: {
     fontFamily: "kodchasan-bold",
-    fontSize: wp(6.5),
+    fontSize: wp(5),
     color: "#414042",
-    alignSelf: "flex-start",
-    marginLeft: wp(5),
+    marginBottom: hp(0.5),
   },
   tasksContainer: {
-    marginLeft: wp(5),
     marginBottom: hp(5),
   },
   taskContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: hp(1),
   },
-  bulletPoint: {
-    fontSize: wp(8),
-    marginRight: wp(2),
-  },
+
   taskText: {
-    marginBottom: 5,
     fontFamily: "kodchasan-regular",
-    fontSize: wp(5),
+    fontSize: wp(4),
+    flex: 1,
   },
   headerUnderline: {
     borderBottomColor: "#414042",
@@ -261,6 +265,30 @@ const styles = StyleSheet.create({
     width: "97%",
     marginTop: wp(1),
     marginLeft: wp(2),
+  },
+  floatingButtonContainer: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+  },
+  checkbox: {
+    width: wp(3),
+    height: wp(3),
+    borderRadius: wp(2.5),
+    borderWidth: 2,
+    marginRight: wp(3),
+  },
+  checkboxCompleted: {
+    backgroundColor: "#414042", // Green color for completed tasks
+    borderColor: "#414042", // Green border color for completed tasks
+  },
+  checkboxOverdue: {
+    backgroundColor: "transparent", // Red color for overdue tasks
+    borderColor: "#red", // Red border color for overdue tasks
+  },
+  checkboxDefault: {
+    backgroundColor: "transparent", // Transparent background for default tasks
+    borderColor: "#414042", // Black border color for default tasks
   },
 });
 

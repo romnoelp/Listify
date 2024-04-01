@@ -21,6 +21,7 @@ import DevelopersScreen from "./screens/DevelopersScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import { ToDoTaskProvider } from "./context/toDoTaskContext";
+import AboutAppScreen from "./screens/AboutAppScreen";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -35,6 +36,7 @@ const MainTopTab = () => {
           tabBarLabelStyle: {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
+            fontSize: wp(4),
           },
           tabBarStyle: {
             borderBottomColor: "#414042",
@@ -51,6 +53,7 @@ const MainTopTab = () => {
           tabBarLabelStyle: {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
+            fontSize: wp(3.9),
           },
           tabBarStyle: {
             borderBottomColor: "#414042",
@@ -68,6 +71,7 @@ const MainTopTab = () => {
           tabBarLabelStyle: {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
+            fontSize: wp(4),
           },
           tabBarStyle: {
             borderBottomColor: "#414042",
@@ -80,10 +84,11 @@ const MainTopTab = () => {
         name="CompletedScreen"
         component={CompletedScreen}
         options={{
-          title: "Completed",
+          title: "Finished",
           tabBarLabelStyle: {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
+            fontSize: wp(4),
           },
           tabBarStyle: {
             borderBottomColor: "#414042",
@@ -138,12 +143,21 @@ const App = () => {
           />
           <MainStack.Screen name="SplashScreen" component={SplashScreen} />
           <MainStack.Screen
+            name="DevelopersScreen"
+            component={DevelopersScreen}
+          />
+          <NotificationsModal
+            isVisible={isNotificationsModalVisible}
+            onClose={toggleNotificationsModal}
+          />
+          <MainStack.Screen
             name="MainTopTab"
             component={MainTopTab}
             options={{
               title: "Listify",
               headerTitleStyle: {
                 fontFamily: "kodchasan-semibold",
+                fontSize: wp(6),
               },
               headerLeft: () => (
                 <SvgXml
@@ -175,6 +189,12 @@ const App = () => {
           <MainStack.Screen
             name="DevelopersScreen"
             component={DevelopersScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen
+            name="AboutAppScreen"
+            component={AboutAppScreen}
+            options={{ headerShown: false }}
           />
         </MainStack.Navigator>
         <NotificationsModal
@@ -184,7 +204,7 @@ const App = () => {
         <OptionsModal
           isVisible={isOptionsModalVisible}
           onClose={toggleOptionsModal}
-          navigateTo={"DevelopersScreen"}
+          navigateTo={"AboutAppScreen"}
         />
       </NavigationContainer>
     </ToDoTaskProvider>
