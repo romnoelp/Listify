@@ -49,10 +49,13 @@ const TaskScreen = () => {
         <View style={[styles.checkbox, styles.checkboxDefault]} />
       )}
     </TouchableOpacity>
-    <Text style={styles.taskText}>{item.title}</Text>
-    <TouchableOpacity onPress={() => handleDeleteTask(item.id)}  style ={[styles.trashIcon]}>
-      <Entypo name="trash" size={24} color="black" />
-    </TouchableOpacity>
+      <Text style={styles.taskText}>{item.title}</Text>
+      <TouchableOpacity style={styles.editIcon}>
+        <Entypo name="edit" size={24} color="black" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleDeleteTask(item.id)} style={styles.trashIcon}>
+        <Entypo name="trash" size={24} color="black" />
+      </TouchableOpacity>
   </View>
 );
 
@@ -167,8 +170,8 @@ const styles = StyleSheet.create({
     borderColor: "black", // Green border color for completed tasks
   },
   checkboxOverdue: {
-    backgroundColor: "#D20062", // Red color for overdue tasks
-    borderColor: "#D20062", // Red border color for overdue tasks
+    backgroundColor: "transparent", // Red color for overdue tasks
+    borderColor: "#red", // Red border color for overdue tasks
   },
   checkboxDefault: {
     backgroundColor: "transparent", // Transparent background for default tasks
@@ -179,6 +182,11 @@ const styles = StyleSheet.create({
     marginBottom: hp(0.8),
     marginLeft: "auto",
   },
+  editIcon: {
+    marginRight: wp(4),
+    marginBottom: hp(0.8),
+  },
+  
 });
 
 export default TaskScreen;
