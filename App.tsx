@@ -21,6 +21,7 @@ import DevelopersScreen from "./screens/DevelopersScreen";
 import AboutAppScreen from "./screens/AboutAppScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -35,6 +36,7 @@ const MainTopTab = () => {
           tabBarLabelStyle: {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
+            fontSize: wp(4),
           },
           tabBarStyle: {
             borderBottomColor: "#414042",
@@ -51,6 +53,7 @@ const MainTopTab = () => {
           tabBarLabelStyle: {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
+            fontSize: wp(4),
           },
           tabBarStyle: {
             borderBottomColor: "#414042",
@@ -68,6 +71,7 @@ const MainTopTab = () => {
           tabBarLabelStyle: {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
+            fontSize: wp(4),
           },
           tabBarStyle: {
             borderBottomColor: "#414042",
@@ -80,10 +84,11 @@ const MainTopTab = () => {
         name="CompletedScreen"
         component={CompletedScreen}
         options={{
-          title: "Completed",
+          title: "Finished",
           tabBarLabelStyle: {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
+            fontSize: wp(4),
           },
           tabBarStyle: {
             borderBottomColor: "#414042",
@@ -147,6 +152,7 @@ const App = () => {
             title: "Listify",
             headerTitleStyle: {
               fontFamily: "kodchasan-semibold",
+              fontSize: wp(6),
             },
             headerLeft: () => (
               <SvgXml
