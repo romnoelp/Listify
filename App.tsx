@@ -18,6 +18,9 @@ import CompletedScreen from "./screens/CompletedScreen";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { MainStackParamList, MainTopTabParamlist } from "./types";
 import DevelopersScreen from "./screens/DevelopersScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import { ToDoTaskProvider } from "./context/toDoTaskContext";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -115,60 +118,76 @@ const App = () => {
   };
 
   return (
-    <NavigationContainer>
-      <MainStack.Navigator initialRouteName="SplashScreen">
-        <MainStack.Screen
-          name="LandingScreen"
-          component={LandingScreen}
-          options={{ headerShown: false }}
+    <ToDoTaskProvider>
+      <NavigationContainer>
+        <MainStack.Navigator initialRouteName="SplashScreen">
+          <MainStack.Screen
+            name="LandingScreen"
+            component={LandingScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen
+            name="LoginScreen"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen
+            name="RegisterScreen"
+            component={RegisterScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen name="SplashScreen" component={SplashScreen} />
+          <MainStack.Screen
+            name="MainTopTab"
+            component={MainTopTab}
+            options={{
+              title: "Listify",
+              headerTitleStyle: {
+                fontFamily: "kodchasan-semibold",
+              },
+              headerLeft: () => (
+                <SvgXml
+                  xml={landingScreenLogo}
+                  height={35}
+                  width={35}
+                  style={{ marginRight: wp(2) }}
+                />
+              ),
+              headerRight: () => (
+                <View style={{ flexDirection: "row" }}>
+                  <TouchableOpacity
+                    onPress={toggleNotificationsModal}
+                    style={{ marginRight: wp(4) }}
+                  >
+                    <Entypo name="bell" size={26} color="black" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={toggleOptionsModal}>
+                    <Entypo
+                      name="dots-three-vertical"
+                      size={24}
+                      color="black"
+                    />
+                  </TouchableOpacity>
+                </View>
+              ),
+            }}
+          />
+          <MainStack.Screen
+            name="DevelopersScreen"
+            component={DevelopersScreen}
+          />
+        </MainStack.Navigator>
+        <NotificationsModal
+          isVisible={isNotificationsModalVisible}
+          onClose={toggleNotificationsModal}
         />
-        <MainStack.Screen name="SplashScreen" component={SplashScreen} />
-        <MainStack.Screen
-          name="MainTopTab"
-          component={MainTopTab}
-          options={{
-            title: "Listify",
-            headerTitleStyle: {
-              fontFamily: "kodchasan-semibold",
-            },
-            headerLeft: () => (
-              <SvgXml
-                xml={landingScreenLogo}
-                height={35}
-                width={35}
-                style={{ marginRight: wp(2) }}
-              />
-            ),
-            headerRight: () => (
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  onPress={toggleNotificationsModal}
-                  style={{ marginRight: wp(4) }}
-                >
-                  <Entypo name="bell" size={26} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={toggleOptionsModal}>
-                  <Entypo name="dots-three-vertical" size={24} color="black" />
-                </TouchableOpacity>
-              </View>
-            ),
-          }}
+        <OptionsModal
+          isVisible={isOptionsModalVisible}
+          onClose={toggleOptionsModal}
+          navigateTo={"DevelopersScreen"}
         />
-        <MainStack.Screen
-          name="DevelopersScreen"
-          component={DevelopersScreen}
-        />
-      </MainStack.Navigator>
-      <NotificationsModal
-        isVisible={isNotificationsModalVisible}
-        onClose={toggleNotificationsModal}
-      />
-      <OptionsModal
-        isVisible={isOptionsModalVisible}
-        onClose={toggleOptionsModal}
-        navigateTo={"DevelopersScreen"}
-      />
-    </NavigationContainer>
+      </NavigationContainer>
+    </ToDoTaskProvider>
   );
 };
 

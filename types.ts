@@ -4,7 +4,7 @@ export type MainStackParamList = {
   RegisterScreen: undefined;
   LandingScreen: undefined;
   MainTopTab: undefined;
-  DeveloperScreen: undefined;
+  DevelopersScreen: undefined;
 };
 
 export type MainTopTabParamlist = {
@@ -12,4 +12,12 @@ export type MainTopTabParamlist = {
   OngoingScreen: undefined;
   OverdueScreen: undefined;
   CompletedScreen: undefined;
+};
+
+export type ToDoTask = {
+  id: String;
+  taskTitle: String;
+  dueDate: Date;
+  taskDescription: String;
+  status: string;
 };
