@@ -53,7 +53,7 @@ const MainTopTab = () => {
           tabBarLabelStyle: {
             textTransform: "none",
             fontFamily: "kodchasan-semibold",
-            fontSize: wp(4),
+            fontSize: wp(3.9),
           },
           tabBarStyle: {
             borderBottomColor: "#414042",

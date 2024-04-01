@@ -1,10 +1,16 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import React, { useState } from "react";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { Entypo } from '@expo/vector-icons';
+import { Entypo } from "@expo/vector-icons";
 import FloatingButton from "../components/FloatingButton";
 
 interface Task {
@@ -20,49 +26,44 @@ const TaskScreen = () => {
     { id: 3, title: "Buy groceries", status: "Completed" },
   ]);
 
-
-  const groupedTasks: { [key: string]: Task[] } = tasks.reduce(
-    (acc, task) => {
-      if (!acc[task.status]) {
-        acc[task.status] = [];
-      }
-      acc[task.status].push(task);
-      return acc;
-    },
-    {} as { [key: string]: Task[] }
-  );
-  const handleToggleTaskStatus = (id: number) => {
-
-  }
-  const handleDeleteTask= (id: number) => {
-
-  }
+  const groupedTasks: { [key: string]: Task[] } = tasks.reduce((acc, task) => {
+    if (!acc[task.status]) {
+      acc[task.status] = [];
+    }
+    acc[task.status].push(task);
+    return acc;
+  }, {} as { [key: string]: Task[] });
+  const handleToggleTaskStatus = (id: number) => {};
+  const handleDeleteTask = (id: number) => {};
 
   const renderItem = ({ item }: { item: Task }) => (
     <View style={styles.taskContainer}>
-    <TouchableOpacity onPress={() => handleToggleTaskStatus(item.id)}>
-      {item.status === "Completed" ? (
-        <View style={[styles.checkbox, styles.checkboxCompleted]} />
-      ) : item.status === "Overdue" ? (
-        <View style={[styles.checkbox, styles.checkboxOverdue]} />
-      ) : (
-        <View style={[styles.checkbox, styles.checkboxDefault]} />
-      )}
-    </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleToggleTaskStatus(item.id)}>
+        {item.status === "Completed" ? (
+          <View style={[styles.checkbox, styles.checkboxCompleted]} />
+        ) : item.status === "Overdue" ? (
+          <View style={[styles.checkbox, styles.checkboxOverdue]} />
+        ) : (
+          <View style={[styles.checkbox, styles.checkboxDefault]} />
+        )}
+      </TouchableOpacity>
       <Text style={styles.taskText}>{item.title}</Text>
       <TouchableOpacity style={styles.editIcon}>
         <Entypo name="edit" size={24} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => handleDeleteTask(item.id)} style={styles.trashIcon}>
+      <TouchableOpacity
+        onPress={() => handleDeleteTask(item.id)}
+        style={styles.trashIcon}
+      >
         <Entypo name="trash" size={24} color="black" />
       </TouchableOpacity>
-  </View>
-);
+    </View>
+  );
 
   return (
     <View style={styles.mainContainer}>
       {groupedTasks["On Going"] && (
-        <View >
+        <View>
           <Text style={styles.headerText}>On Going</Text>
         </View>
       )}
@@ -88,9 +89,7 @@ const TaskScreen = () => {
           contentContainerStyle={styles.tasksContainer}
         />
       )}
-      {groupedTasks["Overdue"] && (
-        <View style={styles.headerUnderline}></View>
-      )}
+      {groupedTasks["Overdue"] && <View style={styles.headerUnderline}></View>}
       {groupedTasks["Completed"] && (
         <View>
           <Text style={styles.headerText}>Completed</Text>
@@ -114,7 +113,6 @@ const TaskScreen = () => {
           }}
         />
       </View>
-
     </View>
   );
 };
@@ -127,13 +125,12 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontFamily: "kodchasan-bold",
-    fontSize: wp(6.5),
+    fontSize: wp(5),
     color: "#414042",
     marginBottom: hp(0.5),
   },
   tasksContainer: {
     marginBottom: hp(5),
-    
   },
   taskContainer: {
     flexDirection: "row",
@@ -143,7 +140,7 @@ const styles = StyleSheet.create({
 
   taskText: {
     fontFamily: "kodchasan-regular",
-    fontSize: wp(5),
+    fontSize: wp(4),
     flex: 1,
   },
   headerUnderline: {
@@ -186,7 +183,6 @@ const styles = StyleSheet.create({
     marginRight: wp(4),
     marginBottom: hp(0.8),
   },
-  
 });
 
 export default TaskScreen;
