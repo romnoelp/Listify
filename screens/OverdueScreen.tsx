@@ -35,12 +35,6 @@ const OverdueScreen = () => {
         )}
       </TouchableOpacity>
       <Text style={styles.taskText}>{item.title}</Text>
-      <TouchableOpacity style={styles.editIcon}>
-        <Entypo name="edit" size={24} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => handleDeleteTask(item.id)} style={styles.trashIcon}>
-        <Entypo name="trash" size={24} color="black" />
-      </TouchableOpacity>
     </View>
   );
 
@@ -78,8 +72,8 @@ const styles = StyleSheet.create({
     marginBottom: hp(1),
   },
   checkbox: {
-    width: wp(5),
-    height: wp(5),
+    width: wp(3),
+    height: wp(3),
     borderRadius: wp(2.5),
     borderWidth: 2,
     marginRight: wp(3),
@@ -98,17 +92,8 @@ const styles = StyleSheet.create({
   },
   taskText: {
     fontFamily: "kodchasan-regular",
-    fontSize: wp(5),
+    fontSize: wp(4),
     flex: 1,
-  },
-  trashIcon: {
-    marginLeft: "auto",
-    fontSize: wp(5),
-    marginBottom: hp(0.8),
-  },
-  editIcon: {
-    marginRight: wp(4),
-    marginBottom: hp(0.8),
   },
   
 });
