@@ -12,8 +12,7 @@ interface Task {
 const CompletedScreen = () => {
   const [tasks, setTasks] = useState<Task[]>([
     { id: 1, title: "Complete homework", status: "On Going" },
-    { id: 2, title: "Go for a run", status: "Overdue" },
-    { id: 3, title: "Buy groceries", status: "Completed" },
+    { id: 4, title: "Bebetaym", status: "On Going"}
   ]);
 
   const handleToggleTaskStatus = (id: number) => {
@@ -47,7 +46,7 @@ const CompletedScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>On Going</Text>
+      <Text style={styles.header}>Completed</Text>
       <FlatList
         data={tasks.filter(task => task.status === "Completed")}
         renderItem={renderItem}
@@ -91,7 +90,7 @@ const styles = StyleSheet.create({
   },
   checkboxOverdue: {
     backgroundColor: "#D20062",
-    borderColor: "red",
+    borderColor: "#D20062",
   },
   checkboxDefault: {
     backgroundColor: "transparent",
@@ -111,6 +110,7 @@ const styles = StyleSheet.create({
     marginRight: wp(4),
     marginBottom: hp(0.8),
   },
+  
 });
 
 export default CompletedScreen;
