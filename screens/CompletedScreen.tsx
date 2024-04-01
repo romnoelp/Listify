@@ -36,6 +36,9 @@ const CompletedScreen = () => {
         )}
       </TouchableOpacity>
       <Text style={styles.taskText}>{item.title}</Text>
+      <TouchableOpacity style={styles.editIcon}>
+        <Entypo name="edit" size={24} color="black" />
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => handleDeleteTask(item.id)} style={styles.trashIcon}>
         <Entypo name="trash" size={24} color="black" />
       </TouchableOpacity>
@@ -88,7 +91,7 @@ const styles = StyleSheet.create({
   },
   checkboxOverdue: {
     backgroundColor: "#D20062",
-    borderColor: "#D20062",
+    borderColor: "red",
   },
   checkboxDefault: {
     backgroundColor: "transparent",
@@ -102,6 +105,10 @@ const styles = StyleSheet.create({
   trashIcon: {
     marginLeft: "auto",
     fontSize: wp(5),
+    marginBottom: hp(0.8),
+  },
+  editIcon: {
+    marginRight: wp(4),
     marginBottom: hp(0.8),
   },
 });
