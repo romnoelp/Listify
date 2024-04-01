@@ -17,11 +17,13 @@ import { landingScreenLogo, mainButtonLogo } from "../loadSVG";
 interface Props {
   onDeleteAllItemsPress: () => void;
   onAddItemsPress: () => void;
+  onCompleteAllItemsPress: () => void;
 }
 
 const FloatingButton: React.FC<Props> = ({
   onDeleteAllItemsPress,
   onAddItemsPress,
+  onCompleteAllItemsPress,
 }) => {
   const [animation] = useState(new Animated.Value(0));
   const [open, setOpen] = useState(false);
@@ -49,7 +51,7 @@ const FloatingButton: React.FC<Props> = ({
       {
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, 100], 
+          outputRange: [0, 100],
         }),
       },
     ],
@@ -85,13 +87,11 @@ const FloatingButton: React.FC<Props> = ({
     ],
   };
 
- 
-
   const rotation = {
     transform: [
       {
         rotate: animation.interpolate({
-          inputRange: [0,1.2],
+          inputRange: [0, 1.2],
           outputRange: ["0deg", "180deg"],
         }),
       },
@@ -112,7 +112,7 @@ const FloatingButton: React.FC<Props> = ({
           <Entypo name="trash" size={25} color="#EBF7F9" />
         </Animated.View>
       </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={() => onDeleteAllItemsPress()}>
+      <TouchableWithoutFeedback onPress={() => onCompleteAllItemsPress()}>
         <Animated.View
           style={[
             styles.button,

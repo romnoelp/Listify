@@ -4,16 +4,15 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  Modal,
-  TextInput,
   Platform,
+  BackHandler,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { Entypo } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import AddModal from "../components/AddModal";
 import { auth, db } from "../firebaseConfig";
@@ -21,12 +20,8 @@ import { ToDoTask } from "../types";
 import { useTaskContext } from "../context/toDoTaskContext";
 import Toast from "react-native-simple-toast";
 import FloatingButton from "../components/FloatingButton";
-
-interface Task {
-  id: number;
-  title: string;
-  status: string;
-}
+import firebase from "firebase/compat/app";
+import { useFocusEffect } from "@react-navigation/native";
 
 const TaskScreen = () => {
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
@@ -35,42 +30,60 @@ const TaskScreen = () => {
   const [showClock, setShowClock] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
-  const { addTask, TasksList } = useTaskContext();
+  const { addTask, TasksList, setNewTasksList, updateTask } = useTaskContext();
+  const [isMultipleSelect, setIsMultipleSelect] = useState(false);
+  const [initialFetch, setInitialFetch] = useState(false);
+  const [selectedTasks, setSelectedTasks] = useState<ToDoTask[]>([]);
+  const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
 
   const user = auth.currentUser;
 
-  console.log(dueDate.toLocaleString());
-
-  // Sample tasks data for testing
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: "Complete homework", status: "On Going" },
-    { id: 2, title: "Go for a run", status: "Overdue" },
-    { id: 3, title: "Buy groceries", status: "Completed" },
-  ]);
-
-  // Group tasks by status
-  const groupedTasks: { [key: string]: Task[] } = tasks.reduce((acc, task) => {
-    if (!acc[task.status]) {
-      acc[task.status] = [];
-    }
-    acc[task.status].push(task);
-    return acc;
-  }, {} as { [key: string]: Task[] });
-
-  const renderItem = ({ item }: { item: Task }) => (
-    <View style={styles.taskContainer}>
-      <TouchableOpacity>
-        {item.status === "Completed" ? (
-          <View style={[styles.checkbox, styles.checkboxCompleted]} />
-        ) : item.status === "Overdue" ? (
-          <View style={[styles.checkbox, styles.checkboxOverdue]} />
-        ) : (
-          <View style={[styles.checkbox, styles.checkboxDefault]} />
-        )}
-      </TouchableOpacity>
-      <Text style={styles.taskText}>{item.title}</Text>
-    </View>
+  useFocusEffect(
+    useCallback(() => {
+      setIsMultipleSelect(false);
+      return () => {
+        // Cleanup function, if needed
+      };
+    }, [])
   );
+
+  const convertTimestampToDate = (
+    timestamp: firebase.firestore.Timestamp
+  ): Date => {
+    const milliseconds = timestamp.seconds * 1000 + timestamp.nanoseconds / 1e6;
+    return new Date(milliseconds);
+  };
+
+  const readData = async () => {
+    try {
+      if (user && user.displayName) {
+        const fetchedData: ToDoTask[] = [];
+        const docRef = db
+          .collection("users")
+          .doc(user.displayName.toString())
+          .collection("Tasks");
+        const querySnapshot = await docRef.get();
+        querySnapshot.forEach((doc) => {
+          const { taskTitle, taskDescription, dueDate, status } = doc.data();
+          fetchedData.push({
+            id: doc.id,
+            taskTitle,
+            taskDescription,
+            dueDate: convertTimestampToDate(dueDate),
+            status,
+          });
+        });
+
+        if (!initialFetch) {
+          setNewTasksList(fetchedData);
+          setInitialFetch(true);
+        }
+      }
+    } catch (error) {
+      Toast.show("Error getting data", Toast.SHORT);
+    }
+  };
+
   const showDatepicker = () => {
     setShowCalendar(!showCalendar);
   };
@@ -112,18 +125,21 @@ const TaskScreen = () => {
     setTaskDescription("");
     setTaskTitle("");
   };
-  console.log(TasksList);
+
+  const enableMultipleSelect = () => {
+    setIsMultipleSelect(true);
+  };
 
   const saveTask = async () => {
+    //save task after finishing in addModal
     try {
-      if (user) {
+      if (user && user.displayName) {
         const docRef = db
           .collection("users")
-          .doc(user.displayName?.toString())
+          .doc(user.displayName.toString())
           .collection("Tasks");
 
         const CurrentDate = new Date();
-        console.log(CurrentDate);
         const statusCheck = CurrentDate > dueDate ? "OverDue" : "OnGoing";
         await docRef.add({
           taskTitle,
@@ -149,8 +165,222 @@ const TaskScreen = () => {
     }
   };
 
+  const handleBackPress = () => {
+    //cancels the multiple selection mode when back button was pressed
+    setIsMultipleSelect(false);
+    return true;
+  };
+
+  useEffect(() => {
+    readData();
+    const backPressHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackPress
+    );
+
+    return () => {
+      backPressHandler.remove();
+    };
+  }, []);
+
+  const completeTask = () => {
+    //comeplete the task when flag was pressed
+    selectedTasks.forEach((item) => {
+      updateTask(item.id, { status: "Completed" });
+    });
+    setIsMultipleSelect(false);
+    setSelectedTasks([]);
+    setSelectedIdentifier([]);
+    if (selectedTasks.length === 0) {
+      Toast.show("Please select a task to be completed", Toast.SHORT);
+    }
+  };
+
+  const handleSelectItem = (item: ToDoTask) => {
+    // select or unselect
+    if (isMultipleSelect) {
+      if (selectedIdentifier.includes(item.id)) {
+        setSelectedTasks(
+          selectedTasks.filter((selected) => selected.id === item.id)
+        );
+        setSelectedIdentifier(
+          selectedIdentifier.filter((selected) => selected !== item.id)
+        );
+      } else {
+        setSelectedTasks((prev) => [...prev, item]);
+        setSelectedIdentifier((prev) => [...prev, item.id]);
+      }
+    }
+  };
+
+  const deleteItems = async () => {
+    if (user && user.displayName) {
+      try {
+        const dbRef = db
+          .collection("uesrs")
+          .doc(user.displayName.toString())
+          .collection("Tasks");
+        const batch = db.batch();
+
+        selectedTasks.forEach((item) => {
+          batch.delete(dbRef.doc(item.id.toString()));
+        });
+
+        await batch.commit();
+
+        const updatedTasksList = TasksList.filter(
+          (task) => !selectedTasks.some((selected) => selected.id === task.id)
+        );
+
+        setNewTasksList(updatedTasksList);
+
+        Toast.show("Items deleted successfully", Toast.SHORT);
+        setSelectedTasks([]);
+        setSelectedIdentifier([]);
+      } catch (error) {
+        Toast.show("Error deleting items, try again later", Toast.SHORT);
+      }
+    }
+  };
+  //remove comments later
   return (
     <View style={styles.mainContainer}>
+      {TasksList.filter((item) => item.status === "OnGoing").length !== 0 ? (
+        <View style={styles.statusView}>
+          <Text style={styles.statusTitle}>On Going</Text>
+          <FlatList
+            keyExtractor={(item) => item.id.toString()}
+            data={TasksList.filter((item) => item.status === "OnGoing")}
+            renderItem={({ item }) => (
+              <View>
+                <TouchableOpacity
+                  style={styles.flatListDesign}
+                  onLongPress={() => {
+                    !isMultipleSelect ? enableMultipleSelect() : {};
+                  }}
+                  onPress={() => {
+                    handleSelectItem(item);
+                  }}
+                >
+                  {isMultipleSelect ? (
+                    selectedIdentifier.includes(item.id) ? (
+                      <Feather
+                        name="check-circle"
+                        size={14}
+                        color="black"
+                        style={{ marginRight: wp(1) }}
+                      />
+                    ) : (
+                      <Feather
+                        name="circle"
+                        size={14}
+                        color="black"
+                        style={{ marginRight: wp(1) }}
+                      />
+                    )
+                  ) : null}
+                  <View>
+                    <Text style={styles.taskTitle}>{item.taskTitle}</Text>
+                    <Text style={styles.taskDueDate}>
+                      {formatDateString(item.dueDate)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
+      ) : null}
+      {}
+      {TasksList.filter((item) => item.status === "OverDue").length !== 0 ? (
+        <View style={styles.statusView}>
+          <Text style={styles.statusTitle}>Overdue</Text>
+          <FlatList
+            keyExtractor={(item) => item.id.toString()}
+            data={TasksList.filter((item) => item.status === "OverDue")}
+            renderItem={({ item }) => (
+              <View>
+                <TouchableOpacity
+                  style={styles.flatListDesign}
+                  onLongPress={() => {
+                    !isMultipleSelect ? enableMultipleSelect() : {};
+                  }}
+                  onPress={() => handleSelectItem(item)}
+                >
+                  {isMultipleSelect ? (
+                    selectedIdentifier.includes(item.id) ? (
+                      <Feather
+                        name="check-circle"
+                        size={14}
+                        color="black"
+                        style={{ marginRight: wp(1) }}
+                      />
+                    ) : (
+                      <Feather
+                        name="circle"
+                        size={14}
+                        color="black"
+                        style={{ marginRight: wp(1) }}
+                      />
+                    )
+                  ) : null}
+                  <View>
+                    <Text style={styles.taskTitle}>{item.taskTitle}</Text>
+                    <Text style={styles.taskDueDate}>
+                      {formatDateString(item.dueDate)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
+      ) : null}
+      {TasksList.filter((item) => item.status === "Completed").length !== 0 ? (
+        <View style={styles.statusView}>
+          <Text style={styles.statusTitle}>Completed</Text>
+          <FlatList
+            keyExtractor={(item) => item.id.toString()}
+            data={TasksList.filter((item) => item.status === "Completed")}
+            renderItem={({ item }) => (
+              <View>
+                <TouchableOpacity
+                  style={styles.flatListDesign}
+                  onLongPress={() => {
+                    !isMultipleSelect ? enableMultipleSelect() : {};
+                  }}
+                  onPress={() => handleSelectItem(item)}
+                >
+                  {isMultipleSelect ? (
+                    selectedIdentifier.includes(item.id) ? (
+                      <Feather
+                        name="check-circle"
+                        size={14}
+                        color="black"
+                        style={{ marginRight: wp(1) }}
+                      />
+                    ) : (
+                      <Feather
+                        name="circle"
+                        size={14}
+                        color="black"
+                        style={{ marginRight: wp(1) }}
+                      />
+                    )
+                  ) : null}
+                  <View>
+                    <Text style={styles.taskTitle}>{item.taskTitle}</Text>
+                    <Text style={styles.taskDueDate}>
+                      {formatDateString(item.dueDate)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
+      ) : null}
+
       <View
         style={{
           position: "absolute",
@@ -164,11 +394,8 @@ const TaskScreen = () => {
         {/*Change to the floating button rotation shit  */}
         <FloatingButton
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
-          onDeleteAllItemsPress={function (): void {
-            throw new Error(
-              "Where's the function, cuh? Define it first, bish."
-            );
-          }}
+          onDeleteAllItemsPress={() => deleteItems()}
+          onCompleteAllItemsPress={() => completeTask()}
         ></FloatingButton>
       </View>
       <AddModal //use this to show addModal
@@ -197,57 +424,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
-
-  headerText: {
+  statusTitle: {
     fontFamily: "kodchasan-bold",
-    fontSize: wp(5),
-    color: "#414042",
-    marginBottom: hp(0.5),
+    fontSize: hp(3),
   },
-  tasksContainer: {
-    marginBottom: hp(5),
-  },
-  taskContainer: {
+  flatListDesign: {
     flexDirection: "row",
+    marginVertical: hp(1),
+    marginHorizontal: wp(3),
     alignItems: "center",
-    marginBottom: hp(1),
   },
-
-  taskText: {
-    fontFamily: "kodchasan-regular",
-    fontSize: wp(4),
-    flex: 1,
+  statusView: { marginHorizontal: wp(5), paddingHorizontal: wp(5), flex: 1 },
+  taskTitle: {
+    fontFamily: "kodchasan-light",
+    fontSize: hp(2.2),
   },
-  headerUnderline: {
-    borderBottomColor: "#414042",
-    borderBottomWidth: wp(0.2),
-    width: "97%",
-    marginTop: wp(1),
-    marginLeft: wp(2),
-  },
-  floatingButtonContainer: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-  },
-  checkbox: {
-    width: wp(3),
-    height: wp(3),
-    borderRadius: wp(2.5),
-    borderWidth: 2,
-    marginRight: wp(3),
-  },
-  checkboxCompleted: {
-    backgroundColor: "#414042", // Green color for completed tasks
-    borderColor: "#414042", // Green border color for completed tasks
-  },
-  checkboxOverdue: {
-    backgroundColor: "transparent", // Red color for overdue tasks
-    borderColor: "#red", // Red border color for overdue tasks
-  },
-  checkboxDefault: {
-    backgroundColor: "transparent", // Transparent background for default tasks
-    borderColor: "#414042", // Black border color for default tasks
+  taskDueDate: {
+    fontFamily: "kodchasan-light",
+    fontSize: hp(1.2),
   },
 });
 

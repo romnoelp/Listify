@@ -88,9 +88,9 @@ const RegisterScreen = ({ navigation }: Props) => {
         );
         const user = userCredential?.user;
 
-        if (user) {
+        if (user && user.displayName) {
           await user.updateProfile({ displayName: name });
-          await db.collection("users").doc(user.displayName?.toString()).set({
+          await db.collection("users").doc(user.displayName.toString()).set({
             userName: user.displayName,
             email,
           });
