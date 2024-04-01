@@ -127,12 +127,13 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontFamily: "kodchasan-bold",
-    fontSize: wp(5),
+    fontSize: wp(6.5),
     color: "#414042",
     marginBottom: hp(0.5),
   },
   tasksContainer: {
     marginBottom: hp(5),
+    
   },
   taskContainer: {
     flexDirection: "row",
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
 
   taskText: {
     fontFamily: "kodchasan-regular",
-    fontSize: wp(3.9),
+    fontSize: wp(5),
     flex: 1,
   },
   headerUnderline: {
