@@ -150,47 +150,6 @@ const TaskScreen = () => {
 
   return (
     <View style={styles.mainContainer}>
-      {groupedTasks["On Going"] && (
-        <View>
-          <Text style={styles.headerText}>On Going</Text>
-        </View>
-      )}
-      {groupedTasks["On Going"] && (
-        <FlatList
-          data={groupedTasks["On Going"]}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.tasksContainer}
-        />
-      )}
-      <View style={styles.headerUnderline}></View>
-      {groupedTasks["Overdue"] && (
-        <View>
-          <Text style={styles.headerText}>Overdue</Text>
-        </View>
-      )}
-      {groupedTasks["Overdue"] && (
-        <FlatList
-          data={groupedTasks["Overdue"]}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.tasksContainer}
-        />
-      )}
-      {groupedTasks["Overdue"] && <View style={styles.headerUnderline}></View>}
-      {groupedTasks["Completed"] && (
-        <View>
-          <Text style={styles.headerText}>Completed</Text>
-        </View>
-      )}
-      {groupedTasks["Completed"] && (
-        <FlatList
-          data={groupedTasks["Completed"]}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.tasksContainer}
-        />
-      )}
       <View
         style={{
           position: "absolute",
@@ -238,7 +197,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
-  headerContainer: {},
+
   headerText: {
     fontFamily: "kodchasan-bold",
     fontSize: wp(5),

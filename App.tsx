@@ -18,10 +18,11 @@ import CompletedScreen from "./screens/CompletedScreen";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { MainStackParamList, MainTopTabParamlist } from "./types";
 import DevelopersScreen from "./screens/DevelopersScreen";
+import AboutAppScreen from "./screens/AboutAppScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { ToDoTaskProvider } from "./context/toDoTaskContext";
-import AboutAppScreen from "./screens/AboutAppScreen";
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
 
@@ -141,14 +142,10 @@ const App = () => {
             component={RegisterScreen}
             options={{ headerShown: false }}
           />
-          <MainStack.Screen name="SplashScreen" component={SplashScreen} />
           <MainStack.Screen
-            name="DevelopersScreen"
-            component={DevelopersScreen}
-          />
-          <NotificationsModal
-            isVisible={isNotificationsModalVisible}
-            onClose={toggleNotificationsModal}
+            name="SplashScreen"
+            component={SplashScreen}
+            options={{ headerShown: false }}
           />
           <MainStack.Screen
             name="MainTopTab"
