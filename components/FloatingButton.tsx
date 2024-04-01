@@ -39,6 +39,15 @@ const FloatingButton: React.FC<Props> = ({
     }).start();
   };
 
+  const resetRotation = () => {
+    setOpen(false);
+    Animated.spring(animation, {
+      toValue: 0,
+      friction: 5,
+      useNativeDriver: true,
+    }).start();
+  };
+
   const deleteAllItemStyle = {
     transform: [
       { scale: animation },
@@ -100,7 +109,12 @@ const FloatingButton: React.FC<Props> = ({
 
   return (
     <View style={[styles.container]}>
-      <TouchableWithoutFeedback onPress={() => onDeleteAllItemsPress()}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          onDeleteAllItemsPress();
+          resetRotation();
+        }}
+      >
         <Animated.View
           style={[
             styles.button,
@@ -112,7 +126,12 @@ const FloatingButton: React.FC<Props> = ({
           <Entypo name="trash" size={25} color="#EBF7F9" />
         </Animated.View>
       </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={() => onCompleteAllItemsPress()}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          onCompleteAllItemsPress();
+          resetRotation();
+        }}
+      >
         <Animated.View
           style={[
             styles.button,
@@ -125,7 +144,12 @@ const FloatingButton: React.FC<Props> = ({
         </Animated.View>
       </TouchableWithoutFeedback>
 
-      <TouchableWithoutFeedback onPress={() => onAddItemsPress()}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          onAddItemsPress();
+          resetRotation();
+        }}
+      >
         <Animated.View
           style={[styles.button, styles.secondary, styles.menu, addItemStyle]}
         >
