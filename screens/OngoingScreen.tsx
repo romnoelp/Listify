@@ -150,8 +150,8 @@ const OngoingScreen = () => {
         <View style={styles.statusView}>
           <Text style={styles.statusTitle}>On Going</Text>
           <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
-              <Text>{isAscending ?<Entypo name="arrow-with-circle-up" size={28} color="black" /> 
-              : <Entypo name="arrow-with-circle-down" size={28} color="black" />}</Text>
+              <Text>{isAscending ?<Entypo name="chevron-with-circle-up" size={28} color="black" /> 
+              : <Entypo name="chevron-with-circle-down" size={28} color="black" />}</Text>
           </TouchableOpacity>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
@@ -210,12 +210,18 @@ const OngoingScreen = () => {
         {/*Change to the floating button rotation shit  */}
         <FloatingButton
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
+<<<<<<< Updated upstream
           onDeleteAllItemsPress={function (): void {
             throw new Error(
               "Where's the function, cuh? Define it first, bish."
             );
           }}
         ></FloatingButton>
+=======
+          onDeleteAllItemsPress={() => deleteItems()}
+          onCompleteAllItemsPress={() => completeTask()}
+        />
+>>>>>>> Stashed changes
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}
@@ -246,9 +252,13 @@ const styles = StyleSheet.create({
   },
   header: {
     fontFamily: "kodchasan-bold",
+<<<<<<< Updated upstream
     fontSize: wp(6.5),
     color: "#414042",
     marginBottom: hp(0.5),
+=======
+    fontSize: hp(2.5),
+>>>>>>> Stashed changes
   },
   listContainer: {
     marginBottom: hp(5),
@@ -258,6 +268,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: hp(1),
   },
+<<<<<<< Updated upstream
   checkbox: {
     width: wp(3),
     height: wp(3),
@@ -268,6 +279,17 @@ const styles = StyleSheet.create({
   checkboxCompleted: {
     backgroundColor: "black",
     borderColor: "black",
+=======
+  statusView: { marginHorizontal: wp(1), paddingHorizontal: wp(5), flex: 1 },
+  taskTitle: {
+    fontFamily: "kodchasan-light",
+    fontSize: hp(1.8),
+  },
+  taskDueDate: {
+    fontFamily: "kodchasan-light",
+    fontSize: hp(1.2),
+    marginLeft: wp(0.3)
+>>>>>>> Stashed changes
   },
   checkboxOverdue: {
     backgroundColor: "#D20062",

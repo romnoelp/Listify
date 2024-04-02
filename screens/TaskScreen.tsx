@@ -141,7 +141,11 @@ const TaskScreen = () => {
           .doc(user.displayName.toString())
           .collection("Tasks")
           .add({
+<<<<<<< Updated upstream
             taskTitle: taskTitle.trim() === "" ? "No Title" : taskTitle,
+=======
+            taskTitle,
+>>>>>>> Stashed changes
             taskDescription,
             dueDate: dueDate,
             status: statusCheck,
@@ -338,7 +342,7 @@ const TaskScreen = () => {
       ) : null}
       {TasksList.filter((item) => item.status === "Completed").length !== 0 ? (
         <View style={styles.statusView}>
-          <Text style={styles.statusTitle}>Completed</Text>
+          <Text style={styles.statusTitle}>Finished</Text>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
             data={TasksList.filter((item) => item.status === "Completed")}
@@ -380,15 +384,22 @@ const TaskScreen = () => {
           />
         </View>
       ) : null}
+      <View style={{
+        borderWidth: 0, // Increase border width for a more visible rectangle
+        borderRadius: 1, // Add border radius for rounded corners
+        paddingVertical: 38, // Adjust vertical padding for some space around the button
+        paddingHorizontal: 150,
+        bottom: wp(-18),
+        backgroundColor: "white"
 
+      
+      }}>
       <View
         style={{
           position: "absolute",
           bottom: wp(10),
           right: wp(40),
-          left: wp(40),
-          justifyContent: "center",
-          alignItems: "center",
+
         }}
       >
         {/*Change to the floating button rotation shit  */}
@@ -396,7 +407,12 @@ const TaskScreen = () => {
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
           onDeleteAllItemsPress={() => deleteItems()}
           onCompleteAllItemsPress={() => completeTask()}
+<<<<<<< Updated upstream
         ></FloatingButton>
+=======
+        />
+>>>>>>> Stashed changes
+      </View>
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}
@@ -423,10 +439,11 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+    marginBottom: hp(8),
   },
   statusTitle: {
     fontFamily: "kodchasan-bold",
-    fontSize: hp(3),
+    fontSize: hp(2.5),
   },
   flatListDesign: {
     flexDirection: "row",
@@ -434,14 +451,15 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(3),
     alignItems: "center",
   },
-  statusView: { marginHorizontal: wp(5), paddingHorizontal: wp(5), flex: 1 },
+  statusView: { marginHorizontal: wp(0), paddingHorizontal: wp(5), flex: 1 },
   taskTitle: {
     fontFamily: "kodchasan-light",
-    fontSize: hp(2.2),
+    fontSize: hp(1.8),
   },
   taskDueDate: {
     fontFamily: "kodchasan-light",
     fontSize: hp(1.2),
+    marginLeft: wp(0.3),
   },
 });
 
