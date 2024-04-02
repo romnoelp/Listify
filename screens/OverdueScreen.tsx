@@ -312,6 +312,10 @@ const OverdueScreen = () => {
       {sortedTasks.length !== 0 ? (
         <View style={styles.statusView}>
           <Text style={styles.statusTitle}>Overdue</Text>
+          <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
+              <Text>{isAscending ?<Entypo name="arrow-with-circle-up" size={28} color="black" /> 
+              : <Entypo name="arrow-with-circle-down" size={28} color="black" />}</Text>
+          </TouchableOpacity>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
             data={sortedTasks}
@@ -364,13 +368,7 @@ const OverdueScreen = () => {
           alignItems: "center",
         }}
       >
-        <FloatingButton
-          onAddItemsPress={() => setIsAddTaskModalVisible(true)}
-          onDeleteAllItemsPress={() => deleteItems()}
-          onCompleteAllItemsPress={() => completeTask()}
-          OnAscendingByDateItemsPress={handleSortToggle}
-          OnDescendingByDateItemsPress={handleSortToggle}
-        />
+
       </View>
       <AddModal
         dueDate={dueDate}

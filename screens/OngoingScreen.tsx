@@ -22,6 +22,8 @@ import Toast from "react-native-simple-toast";
 import FloatingButton from "../components/FloatingButton";
 import firebase from "firebase/compat/app";
 import { useFocusEffect } from "@react-navigation/native";
+import { Entypo } from '@expo/vector-icons';
+
 
 
 const OngoingScreen = () => {
@@ -312,6 +314,10 @@ const OngoingScreen = () => {
       {TasksList.filter((item) => item.status === "OnGoing").length !== 0 ? (
         <View style={styles.statusView}>
           <Text style={styles.statusTitle}>On Going</Text>
+          <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
+              <Text>{isAscending ?<Entypo name="arrow-with-circle-up" size={28} color="black" /> 
+              : <Entypo name="arrow-with-circle-down" size={28} color="black" />}</Text>
+          </TouchableOpacity>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
             data={sortedTasks}
