@@ -185,27 +185,14 @@ const TaskScreen = () => {
 
   const completeTask = () => {
     //comeplete the task when flag was pressed
-    try {
-      if (user && user.displayName) {
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-        selectedTasks.forEach(async (item) => {
-          await docRef.doc(item.id.toString()).update({
-            status: "Completed",
-          });
-          updateTask(item.id, { status: "Completed" });
-        });
-        setIsMultipleSelect(false);
-        setSelectedTasks([]);
-        setSelectedIdentifier([]);
-        if (selectedTasks.length === 0) {
-          Toast.show("Please select a task to be completed", Toast.SHORT);
-        }
-      }
-    } catch (error) {
-      Toast.show("Error updating in database, try again later", Toast.SHORT);
+    selectedTasks.forEach((item) => {
+      updateTask(item.id, { status: "Completed" });
+    });
+    setIsMultipleSelect(false);
+    setSelectedTasks([]);
+    setSelectedIdentifier([]);
+    if (selectedTasks.length === 0) {
+      Toast.show("Please select a task to be completed", Toast.SHORT);
     }
   };
 
