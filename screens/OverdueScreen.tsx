@@ -39,7 +39,7 @@ const OverdueScreen = () => {
   const [isAscending, setIsAscending] = useState(true); // State to track sorting order
 
   const user = auth.currentUser;
-
+  
   useFocusEffect(
     useCallback(() => {
       setIsMultipleSelect(false);
@@ -133,26 +133,25 @@ const OverdueScreen = () => {
   };
 
   const saveTask = async () => {
-    
+    //save task after finishing in addModal
     try {
       if (user && user.displayName) {
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-
         const CurrentDate = new Date();
         const statusCheck = CurrentDate > dueDate ? "OverDue" : "OnGoing";
-        await docRef.add({
-          taskTitle,
-          taskDescription,
-          dueDate: dueDate,
-          status: statusCheck,
-        });
+        const docRef = await db
+          .collection("users")
+          .doc(user.displayName.toString())
+          .collection("Tasks")
+          .add({
+            taskTitle: taskTitle.trim() === "" ? "No Title" : taskTitle,
+            taskDescription,
+            dueDate: dueDate,
+            status: statusCheck,
+          });
 
         const newTask: ToDoTask = {
           id: docRef.id,
-          taskTitle,
+          taskTitle: taskTitle.trim() === "" ? "No Title" : taskTitle,
           taskDescription,
           dueDate,
           status: statusCheck,
@@ -184,6 +183,19 @@ const OverdueScreen = () => {
       backPressHandler.remove();
     };
   }, []);
+
+  const completeTask = () => {
+    //comeplete the task when flag was pressed
+    selectedTasks.forEach((item) => {
+      updateTask(item.id, { status: "Completed" });
+    });
+    setIsMultipleSelect(false);
+    setSelectedTasks([]);
+    setSelectedIdentifier([]);
+    if (selectedTasks.length === 0) {
+      Toast.show("Please select a task to be completed", Toast.SHORT);
+    }
+  };
 
   const handleSelectItem = (item: ToDoTask) => {
     // select or unselect
@@ -226,11 +238,14 @@ const OverdueScreen = () => {
         Toast.show("Items deleted successfully", Toast.SHORT);
         setSelectedTasks([]);
         setSelectedIdentifier([]);
+        setIsMultipleSelect(false);
       } catch (error) {
         Toast.show("Error deleting items, try again later", Toast.SHORT);
       }
     }
   };
+  
+
 
   const selectionSortAscending = (tasksList: ToDoTask[]): ToDoTask[] => {
     const sortedTasks = [...tasksList];

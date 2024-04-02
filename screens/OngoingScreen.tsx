@@ -41,7 +41,6 @@ const OngoingScreen = () => {
   const [isAscending, setIsAscending] = useState(true); 
 
   const user = auth.currentUser;
-
   useFocusEffect(
     useCallback(() => {
       setIsMultipleSelect(false);
@@ -145,7 +144,7 @@ const OngoingScreen = () => {
           .doc(user.displayName.toString())
           .collection("Tasks")
           .add({
-            taskTitle,
+            taskTitle: taskTitle.trim() === "" ? "No Title" : taskTitle,
             taskDescription,
             dueDate: dueDate,
             status: statusCheck,
@@ -153,7 +152,7 @@ const OngoingScreen = () => {
 
         const newTask: ToDoTask = {
           id: docRef.id,
-          taskTitle,
+          taskTitle: taskTitle.trim() === "" ? "No Title" : taskTitle,
           taskDescription,
           dueDate,
           status: statusCheck,
@@ -188,32 +187,19 @@ const OngoingScreen = () => {
 
   const completeTask = () => {
     //comeplete the task when flag was pressed
-    try {
-      if (user && user.displayName) {
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-        selectedTasks.forEach(async (item) => {
-          await docRef.doc(item.id.toString()).update({
-            status: "Completed",
-          });
-          updateTask(item.id, { status: "Completed" });
-        });
-        setIsMultipleSelect(false);
-        setSelectedTasks([]);
-        setSelectedIdentifier([]);
-        if (selectedTasks.length === 0) {
-          Toast.show("Please select a task to be completed", Toast.SHORT);
-        }
-      }
-    } catch (error) {
-      Toast.show("Error updating in database, try again later", Toast.SHORT);
+    selectedTasks.forEach((item) => {
+      updateTask(item.id, { status: "Completed" });
+    });
+    setIsMultipleSelect(false);
+    setSelectedTasks([]);
+    setSelectedIdentifier([]);
+    if (selectedTasks.length === 0) {
+      Toast.show("Please select a task to be completed", Toast.SHORT);
     }
   };
 
   const handleSelectItem = (item: ToDoTask) => {
-    
+    // select or unselect
     if (isMultipleSelect) {
       if (selectedIdentifier.includes(item.id)) {
         setSelectedTasks(
@@ -253,6 +239,7 @@ const OngoingScreen = () => {
         Toast.show("Items deleted successfully", Toast.SHORT);
         setSelectedTasks([]);
         setSelectedIdentifier([]);
+        setIsMultipleSelect(false);
       } catch (error) {
         Toast.show("Error deleting items, try again later", Toast.SHORT);
       }
