@@ -22,7 +22,8 @@ import Toast from "react-native-simple-toast";
 import FloatingButton from "../components/FloatingButton";
 import firebase from "firebase/compat/app";
 import { useFocusEffect } from "@react-navigation/native";
-import { Entypo } from '@expo/vector-icons';
+import { Entypo } from "@expo/vector-icons";
+import { Button } from "@rneui/base";
 
 const OverdueScreen = () => {
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
@@ -33,58 +34,23 @@ const OverdueScreen = () => {
   const [taskDescription, setTaskDescription] = useState("");
   const { addTask, TasksList, setNewTasksList, updateTask } = useTaskContext();
   const [isMultipleSelect, setIsMultipleSelect] = useState(false);
-  const [initialFetch, setInitialFetch] = useState(false);
+  const [iniitalRender, setInitialRender] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState<ToDoTask[]>([]);
   const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
-  const [isAscending, setIsAscending] = useState(true); // State to track sorting order
+  const [sortedList, setSortedList] = useState<ToDoTask[]>([]);
 
   const user = auth.currentUser;
-  
+
   useFocusEffect(
     useCallback(() => {
       setIsMultipleSelect(false);
+      setSelectedTasks([]);
+      setSelectedIdentifier([]);
       return () => {
         // Cleanup function, if needed
       };
     }, [])
   );
-
-  const convertTimestampToDate = (
-    timestamp: firebase.firestore.Timestamp
-  ): Date => {
-    const milliseconds = timestamp.seconds * 1000 + timestamp.nanoseconds / 1e6;
-    return new Date(milliseconds);
-  };
-
-  const readData = async () => {
-    try {
-      if (user && user.displayName) {
-        const fetchedData: ToDoTask[] = [];
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-        const querySnapshot = await docRef.get();
-        querySnapshot.forEach((doc) => {
-          const { taskTitle, taskDescription, dueDate, status } = doc.data();
-          fetchedData.push({
-            id: doc.id,
-            taskTitle,
-            taskDescription,
-            dueDate: convertTimestampToDate(dueDate),
-            status,
-          });
-        });
-
-        if (!initialFetch) {
-          setNewTasksList(fetchedData);
-          setInitialFetch(true);
-        }
-      }
-    } catch (error) {
-      Toast.show("Error getting data", Toast.SHORT);
-    }
-  };
 
   const showDatepicker = () => {
     setShowCalendar(!showCalendar);
@@ -98,6 +64,9 @@ const OverdueScreen = () => {
         setShowClock(true);
         setShowCalendar(false);
       }
+    }
+    if (event.type === "dismissed") {
+      setShowCalendar(false);
     }
     showDatepicker(); // Always call showDatepicker after handling date change
   };
@@ -169,26 +138,10 @@ const OverdueScreen = () => {
   const handleBackPress = () => {
     //cancels the multiple selection mode when back button was pressed
     setIsMultipleSelect(false);
+    setSelectedTasks([]);
+    setSelectedIdentifier([]);
     return true;
   };
-
-  useEffect(() => {
-    readData();
-    const backPressHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      handleBackPress
-    );
-    const sortTasksList =()=> {if (TasksList && TasksList.length > 0) {
-      const sortedTasks = selectionSortAscending(
-        TasksList.filter((item) => item.status === "OverDue")
-      );
-      setNewTasksList(sortedTasks);
-    }}
-
-    return () => {
-      backPressHandler.remove();
-    };
-  }, [TasksList]);
 
   const completeTask = () => {
     //comeplete the task when flag was pressed
@@ -250,76 +203,59 @@ const OverdueScreen = () => {
       }
     }
   };
-  
 
-
-  const selectionSortAscending = (tasksList: ToDoTask[]): ToDoTask[] => {
-    const sortedTasks = [...tasksList];
-  
-    for (let i = 0; i < sortedTasks.length - 1; i++) {
-      let minIndex = i;
-      for (let j = i + 1; j < sortedTasks.length; j++) {
-        if (sortedTasks[j].dueDate < sortedTasks[minIndex].dueDate) {
-          minIndex = j;
-        }
-      }
-      if (minIndex !== i) {
-        
-        const temp = sortedTasks[i];
-        sortedTasks[i] = sortedTasks[minIndex];
-        sortedTasks[minIndex] = temp;
-      }
-    }
-  
-    return sortedTasks;
+  const sortFilteredData = (array: ToDoTask[]) => {
+    return array
+      .filter((item) => item.status === "OverDue")
+      .sort((a, b) => {
+        const aDueDate = a.dueDate.getTime();
+        const bDueDate = b.dueDate.getTime();
+        return aDueDate - bDueDate;
+      });
   };
+
   useEffect(() => {
-    // Sort the tasks whenever TasksList changes
-    if (TasksList && TasksList.length > 0) {
-      const sortedTasks = selectionSortAscending(
-        TasksList.filter((item) => item.status === "OverDue")
-      );
-      setNewTasksList(sortedTasks);
-    }
+    const sortedArray = sortFilteredData(TasksList);
+    setSortedList(sortedArray);
+
+    const backPressHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackPress
+    );
+
+    return () => {
+      if (!iniitalRender) {
+        backPressHandler.remove();
+      }
+      setInitialRender(true);
+    };
   }, [TasksList]);
-  
-
-  const selectionSortDescending = (tasksList: ToDoTask[]): ToDoTask[] => {
-    const sortedTasks = [...tasksList];
-  
-    for (let i = 0; i < sortedTasks.length - 1; i++) {
-      let maxIndex = i;
-      for (let j = i + 1; j < sortedTasks.length; j++) {
-        if (sortedTasks[j].dueDate > sortedTasks[maxIndex].dueDate) {
-          maxIndex = j;
-        }
-      }
-      if (maxIndex !== i) {
-        
-        const temp = sortedTasks[i];
-        sortedTasks[i] = sortedTasks[maxIndex];
-        sortedTasks[maxIndex] = temp;
-      }
-    }
-  
-    return sortedTasks;
-  };
-  const handleSortToggle = () => {
-    setIsAscending((prev) => !prev); // Toggle sorting order
-  };
-  const sortedTasks = 
-    selectionSortAscending(TasksList.filter((item) => item.status === "OverDue"))
- 
-
 
   return (
     <View style={styles.mainContainer}>
-      {sortedTasks.length !== 0 ? (
+      <Button
+        title={"Search Date"}
+        buttonStyle={{
+          backgroundColor: "#FFFFFF",
+          borderWidth: wp(0.5),
+          borderColor: "#414042",
+          marginHorizontal: wp(4),
+          borderRadius: wp(4),
+          marginTop: hp(1),
+          justifyContent: "flex-start",
+        }}
+      >
+        <Entypo name="magnifying-glass" size={20} color="black" />
+        <Text style={{ marginLeft: wp(2), fontFamily: "kodchasan-extralight" }}>
+          Looking for a specific task?
+        </Text>
+      </Button>
+      {sortedList.length !== 0 ? (
         <View style={styles.statusView}>
           <Text style={styles.statusTitle}>Overdue</Text>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
-            data={sortedTasks}
+            data={sortedList}
             renderItem={({ item }) => (
               <View>
                 <TouchableOpacity
@@ -368,9 +304,11 @@ const OverdueScreen = () => {
       >
         <FloatingButton
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
-          onDeleteAllItemsPress={() => deleteItems()} onCompleteAllItemsPress={function (): void {
+          onDeleteAllItemsPress={() => deleteItems()}
+          onCompleteAllItemsPress={function (): void {
             throw new Error("Function not implemented.");
-          } }        />
+          }}
+        />
       </View>
       <AddModal
         dueDate={dueDate}
@@ -416,7 +354,7 @@ const styles = StyleSheet.create({
   taskDueDate: {
     fontFamily: "kodchasan-light",
     fontSize: hp(1.2),
-    marginLeft: wp(0.3)
+    marginLeft: wp(0.3),
   },
   sortIndicator: {
     alignItems: "center",

@@ -22,7 +22,8 @@ import Toast from "react-native-simple-toast";
 import FloatingButton from "../components/FloatingButton";
 import firebase from "firebase/compat/app";
 import { useFocusEffect } from "@react-navigation/native";
-import { Entypo } from '@expo/vector-icons';
+import { Entypo } from "@expo/vector-icons";
+import { Button } from "@rneui/base";
 
 const CompletedScreen = () => {
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
@@ -33,58 +34,24 @@ const CompletedScreen = () => {
   const [taskDescription, setTaskDescription] = useState("");
   const { addTask, TasksList, setNewTasksList, updateTask } = useTaskContext();
   const [isMultipleSelect, setIsMultipleSelect] = useState(false);
-  const [initialFetch, setInitialFetch] = useState(false);
+  const [iniitalRender, setInitialRender] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState<ToDoTask[]>([]);
   const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
-  const [isAscending, setIsAscending] = useState(true); 
+  const [sortedList, setSortedList] = useState<ToDoTask[]>([]);
 
   const user = auth.currentUser;
 
   useFocusEffect(
     useCallback(() => {
       setIsMultipleSelect(false);
+      setSelectedTasks([]);
+      setSelectedIdentifier([]);
+
       return () => {
         // Cleanup function, if needed
       };
     }, [])
   );
-
-  const convertTimestampToDate = (
-    timestamp: firebase.firestore.Timestamp
-  ): Date => {
-    const milliseconds = timestamp.seconds * 1000 + timestamp.nanoseconds / 1e6;
-    return new Date(milliseconds);
-  };
-
-  const readData = async () => {
-    try {
-      if (user && user.displayName) {
-        const fetchedData: ToDoTask[] = [];
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-        const querySnapshot = await docRef.get();
-        querySnapshot.forEach((doc) => {
-          const { taskTitle, taskDescription, dueDate, status } = doc.data();
-          fetchedData.push({
-            id: doc.id,
-            taskTitle,
-            taskDescription,
-            dueDate: convertTimestampToDate(dueDate),
-            status,
-          });
-        });
-
-        if (!initialFetch) {
-          setNewTasksList(fetchedData);
-          setInitialFetch(true);
-        }
-      }
-    } catch (error) {
-      Toast.show("Error getting data", Toast.SHORT);
-    }
-  };
 
   const showDatepicker = () => {
     setShowCalendar(!showCalendar);
@@ -98,6 +65,9 @@ const CompletedScreen = () => {
         setShowClock(true);
         setShowCalendar(false);
       }
+    }
+    if (event.type === "dismissed") {
+      setShowCalendar(false);
     }
     showDatepicker(); // Always call showDatepicker after handling date change
   };
@@ -169,20 +139,10 @@ const CompletedScreen = () => {
   const handleBackPress = () => {
     //cancels the multiple selection mode when back button was pressed
     setIsMultipleSelect(false);
+    setSelectedTasks([]);
+    setSelectedIdentifier([]);
     return true;
   };
-
-  useEffect(() => {
-    readData();
-    const backPressHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      handleBackPress
-    );
-
-    return () => {
-      backPressHandler.remove();
-    };
-  }, []);
 
   const completeTask = () => {
     //comeplete the task when flag was pressed
@@ -245,67 +205,59 @@ const CompletedScreen = () => {
     }
   };
 
-  const selectionSortAscending = (tasksList: ToDoTask[]): ToDoTask[] => {
-    const sortedTasks = [...tasksList];
-  
-    for (let i = 0; i < sortedTasks.length - 1; i++) {
-      let minIndex = i;
-      for (let j = i + 1; j < sortedTasks.length; j++) {
-        if (sortedTasks[j].dueDate < sortedTasks[minIndex].dueDate) {
-          minIndex = j;
-        }
-      }
-      if (minIndex !== i) {
-        
-        const temp = sortedTasks[i];
-        sortedTasks[i] = sortedTasks[minIndex];
-        sortedTasks[minIndex] = temp;
-      }
-    }
-  
-    return sortedTasks;
+  const sortFilteredData = (array: ToDoTask[]) => {
+    return array
+      .filter((item) => item.status === "Completed")
+      .sort((a, b) => {
+        const aDueDate = a.dueDate.getTime();
+        const bDueDate = b.dueDate.getTime();
+        return aDueDate - bDueDate;
+      });
   };
 
-  const selectionSortDescending = (tasksList: ToDoTask[]): ToDoTask[] => {
-    const sortedTasks = [...tasksList];
-  
-    for (let i = 0; i < sortedTasks.length - 1; i++) {
-      let maxIndex = i;
-      for (let j = i + 1; j < sortedTasks.length; j++) {
-        if (sortedTasks[j].dueDate > sortedTasks[maxIndex].dueDate) {
-          maxIndex = j;
-        }
+  useEffect(() => {
+    const sortedArray = sortFilteredData(TasksList);
+    setSortedList(sortedArray);
+
+    const backPressHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackPress
+    );
+
+    return () => {
+      if (!iniitalRender) {
+        backPressHandler.remove();
       }
-      if (maxIndex !== i) {
-        
-        const temp = sortedTasks[i];
-        sortedTasks[i] = sortedTasks[maxIndex];
-        sortedTasks[maxIndex] = temp;
-      }
-    }
-    
-  
-    return sortedTasks;
-  };
-  const handleSortToggle = () => {
-    setIsAscending((prev) => !prev); // Toggle sorting order
-  };
-  const sortedTasks = isAscending
-    ? selectionSortAscending(TasksList.filter((item) => item.status === "Completed"))
-    : selectionSortDescending(TasksList.filter((item) => item.status === "Completed"));
+      setInitialRender(true);
+    };
+  }, [TasksList]);
 
   return (
     <View style={styles.mainContainer}>
-      {sortedTasks.length !== 0 ? (
+      <Button
+        title={"Search Date"}
+        buttonStyle={{
+          backgroundColor: "#FFFFFF",
+          borderWidth: wp(0.5),
+          borderColor: "#414042",
+          marginHorizontal: wp(4),
+          borderRadius: wp(4),
+          marginTop: hp(1),
+          justifyContent: "flex-start",
+        }}
+      >
+        <Entypo name="magnifying-glass" size={20} color="black" />
+        <Text style={{ marginLeft: wp(2), fontFamily: "kodchasan-extralight" }}>
+          Looking for a specific task?
+        </Text>
+      </Button>
+      {sortedList.length !== 0 ? (
         <View style={styles.statusView}>
           <Text style={styles.statusTitle}>Finished</Text>
-          <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
-              <Text>{isAscending ?<Entypo name="chevron-with-circle-up" size={28} color="black" /> 
-              : <Entypo name="chevron-with-circle-down" size={28} color="black" />}</Text>
-          </TouchableOpacity>
+
           <FlatList
             keyExtractor={(item) => item.id.toString()}
-            data={sortedTasks}
+            data={sortedList}
             renderItem={({ item }) => (
               <View>
                 <TouchableOpacity
@@ -405,7 +357,7 @@ const styles = StyleSheet.create({
   taskDueDate: {
     fontFamily: "kodchasan-light",
     fontSize: hp(1.2),
-    marginLeft: wp(0.3)
+    marginLeft: wp(0.3),
   },
   sortIndicator: {
     alignItems: "center",
@@ -420,4 +372,3 @@ const styles = StyleSheet.create({
 });
 
 export default CompletedScreen;
-
