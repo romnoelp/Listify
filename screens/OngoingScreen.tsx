@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,88 +6,67 @@ import {
   FlatList,
   TouchableOpacity,
   Platform,
-  BackHandler,
 } from "react-native";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { Feather } from "@expo/vector-icons";
-import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { Entypo } from "@expo/vector-icons";
 import AddModal from "../components/AddModal";
+import { useTaskContext } from "../context/toDoTaskContext";
+import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { auth, db } from "../firebaseConfig";
 import { ToDoTask } from "../types";
-import { useTaskContext } from "../context/toDoTaskContext";
 import Toast from "react-native-simple-toast";
 import FloatingButton from "../components/FloatingButton";
-import firebase from "firebase/compat/app";
-import { useFocusEffect } from "@react-navigation/native";
-import { Entypo } from '@expo/vector-icons';
+
+interface Task {
+  id: number;
+  title: string;
+  status: string;
+}
 
 const OngoingScreen = () => {
+  const [tasks, setTasks] = useState<Task[]>([
+    { id: 1, title: "Complete homework", status: "On Going" },
+    { id: 4, title: "Bebetaym", status: "On Going" },
+  ]);
+
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
   const [dueDate, setDueDate] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
   const [showClock, setShowClock] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
-  const { addTask, TasksList, setNewTasksList, updateTask } = useTaskContext();
-  const [isMultipleSelect, setIsMultipleSelect] = useState(false);
-  const [initialFetch, setInitialFetch] = useState(false);
-  const [selectedTasks, setSelectedTasks] = useState<ToDoTask[]>([]);
-  const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
-  const [isAscending, setIsAscending] = useState(true); 
-
+  const { addTask, TasksList } = useTaskContext();
   const user = auth.currentUser;
 
-  useFocusEffect(
-    useCallback(() => {
-      setIsMultipleSelect(false);
-      return () => {
-        // Cleanup function, if needed
-      };
-    }, [])
-  );
-
-  const convertTimestampToDate = (
-    timestamp: firebase.firestore.Timestamp
-  ): Date => {
-    const milliseconds = timestamp.seconds * 1000 + timestamp.nanoseconds / 1e6;
-    return new Date(milliseconds);
+  const handleToggleTaskStatus = (id: number) => {
+    // Implement logic to change task status
   };
 
-  const readData = async () => {
-    try {
-      if (user && user.displayName) {
-        const fetchedData: ToDoTask[] = [];
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-        const querySnapshot = await docRef.get();
-        querySnapshot.forEach((doc) => {
-          const { taskTitle, taskDescription, dueDate, status } = doc.data();
-          fetchedData.push({
-            id: doc.id,
-            taskTitle,
-            taskDescription,
-            dueDate: convertTimestampToDate(dueDate),
-            status,
-          });
-        });
+  const handleDeleteTask = (id: number) => {
+    // Implement logic to delete task
+  };
 
-        if (!initialFetch) {
-          setNewTasksList(fetchedData);
-          setInitialFetch(true);
-        }
+  const formatDateString = (date: Date): string => {
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const onChangeTime = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    if (event.type === "set" && selectedDate) {
+      const currentDate = selectedDate;
+      setDueDate(currentDate);
+      if (Platform.OS === "android") {
+        setShowClock(false);
       }
-    } catch (error) {
-      Toast.show("Error getting data", Toast.SHORT);
     }
-  };
-
-  const showDatepicker = () => {
-    setShowCalendar(!showCalendar);
   };
 
   const onChangeDate = (event: DateTimePickerEvent, selectedDate?: Date) => {
@@ -102,46 +81,20 @@ const OngoingScreen = () => {
     showDatepicker(); // Always call showDatepicker after handling date change
   };
 
-  const onChangeTime = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    if (event.type === "set" && selectedDate) {
-      const currentDate = selectedDate;
-      setDueDate(currentDate);
-      if (Platform.OS === "android") {
-        setShowClock(false);
-      }
-    }
-  };
-
-  const formatDateString = (date: Date): string => {
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const closeAddTaskModal = () => {
-    setIsAddTaskModalVisible(!isAddTaskModalVisible);
-    setTaskDescription("");
-    setTaskTitle("");
-  };
-
-  const enableMultipleSelect = () => {
-    setIsMultipleSelect(true);
+  const showDatepicker = () => {
+    setShowCalendar(!showCalendar);
   };
 
   const saveTask = async () => {
-    //save task after finishing in addModal
     try {
-      if (user && user.displayName) {
+      if (user) {
         const docRef = db
           .collection("users")
-          .doc(user.displayName.toString())
+          .doc(user.displayName?.toString())
           .collection("Tasks");
 
         const CurrentDate = new Date();
+        console.log(CurrentDate);
         const statusCheck = CurrentDate > dueDate ? "OverDue" : "OnGoing";
         await docRef.add({
           taskTitle,
@@ -167,203 +120,36 @@ const OngoingScreen = () => {
     }
   };
 
-  const handleBackPress = () => {
-    //cancels the multiple selection mode when back button was pressed
-    setIsMultipleSelect(false);
-    return true;
+  const closeAddTaskModal = () => {
+    setIsAddTaskModalVisible(!isAddTaskModalVisible);
+    setTaskDescription("");
+    setTaskTitle("");
   };
 
-  useEffect(() => {
-    readData();
-    const backPressHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      handleBackPress
-    );
-
-    return () => {
-      backPressHandler.remove();
-    };
-  }, []);
-
-  const completeTask = () => {
-    //comeplete the task when flag was pressed
-    try {
-      if (user && user.displayName) {
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-        selectedTasks.forEach(async (item) => {
-          await docRef.doc(item.id.toString()).update({
-            status: "Completed",
-          });
-          updateTask(item.id, { status: "Completed" });
-        });
-        setIsMultipleSelect(false);
-        setSelectedTasks([]);
-        setSelectedIdentifier([]);
-        if (selectedTasks.length === 0) {
-          Toast.show("Please select a task to be completed", Toast.SHORT);
-        }
-      }
-    } catch (error) {
-      Toast.show("Error updating in database, try again later", Toast.SHORT);
-    }
-  };
-
-  const handleSelectItem = (item: ToDoTask) => {
-    // select or unselect
-    if (isMultipleSelect) {
-      if (selectedIdentifier.includes(item.id)) {
-        setSelectedTasks(
-          selectedTasks.filter((selected) => selected.id === item.id)
-        );
-        setSelectedIdentifier(
-          selectedIdentifier.filter((selected) => selected !== item.id)
-        );
-      } else {
-        setSelectedTasks((prev) => [...prev, item]);
-        setSelectedIdentifier((prev) => [...prev, item.id]);
-      }
-    }
-  };
-
-  const deleteItems = async () => {
-    if (user && user.displayName) {
-      try {
-        const dbRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-        const batch = db.batch();
-
-        selectedTasks.forEach((item) => {
-          batch.delete(dbRef.doc(item.id.toString()));
-        });
-
-        await batch.commit();
-
-        const updatedTasksList = TasksList.filter(
-          (task) => !selectedTasks.some((selected) => selected.id === task.id)
-        );
-
-        setNewTasksList(updatedTasksList);
-
-        Toast.show("Items deleted successfully", Toast.SHORT);
-        setSelectedTasks([]);
-        setSelectedIdentifier([]);
-      } catch (error) {
-        Toast.show("Error deleting items, try again later", Toast.SHORT);
-      }
-    }
-  };
-
-  const selectionSortAscending = (tasksList: ToDoTask[]): ToDoTask[] => {
-    const sortedTasks = [...tasksList];
-  
-    for (let i = 0; i < sortedTasks.length - 1; i++) {
-      let minIndex = i;
-      for (let j = i + 1; j < sortedTasks.length; j++) {
-        if (sortedTasks[j].dueDate < sortedTasks[minIndex].dueDate) {
-          minIndex = j;
-        }
-      }
-      if (minIndex !== i) {
-        // Swap elements
-        const temp = sortedTasks[i];
-        sortedTasks[i] = sortedTasks[minIndex];
-        sortedTasks[minIndex] = temp;
-      }
-    }
-  
-    return sortedTasks;
-  };
-  
-  // Selection sort for sorting tasks by due date in descending order
-  const selectionSortDescending = (tasksList: ToDoTask[]): ToDoTask[] => {
-    const sortedTasks = [...tasksList];
-  
-    for (let i = 0; i < sortedTasks.length - 1; i++) {
-      let maxIndex = i;
-      for (let j = i + 1; j < sortedTasks.length; j++) {
-        if (sortedTasks[j].dueDate > sortedTasks[maxIndex].dueDate) {
-          maxIndex = j;
-        }
-      }
-      if (maxIndex !== i) {
-        // Swap elements
-        const temp = sortedTasks[i];
-        sortedTasks[i] = sortedTasks[maxIndex];
-        sortedTasks[maxIndex] = temp;
-      }
-    }
-  
-    return sortedTasks;
-  };
-
-  const handleSortToggle = () => {
-    setIsAscending((prev) => !prev); // Toggle sorting order
-  };
-  const sortedTasks = isAscending
-    ? selectionSortAscending(TasksList.filter((item) => item.status === "OnGoing"))
-    : selectionSortDescending(TasksList.filter((item) => item.status === "OnGoing"));
+  const renderItem = ({ item }: { item: Task }) => (
+    <View style={styles.taskContainer}>
+      <TouchableOpacity onPress={() => handleToggleTaskStatus(item.id)}>
+        {item.status === "Completed" ? (
+          <View style={[styles.checkbox, styles.checkboxCompleted]} />
+        ) : item.status === "Overdue" ? (
+          <View style={[styles.checkbox, styles.checkboxOverdue]} />
+        ) : (
+          <View style={[styles.checkbox, styles.checkboxDefault]} />
+        )}
+      </TouchableOpacity>
+      <Text style={styles.taskText}>{item.title}</Text>
+    </View>
+  );
 
   return (
-    <View style={styles.mainContainer}>
-      {TasksList.filter((item) => item.status === "OnGoing").length !== 0 ? (
-        <View style={styles.statusView}>
-          <Text style={styles.statusTitle}>On Going</Text>
-                {/* Arrow indicator for sorting */}
-            <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
-              <Text>{isAscending ?<Entypo name="arrow-with-circle-up" size={28} color="black" /> 
-              : <Entypo name="arrow-with-circle-down" size={28} color="black" />}</Text>
-            </TouchableOpacity>
-
-
-          <FlatList
-            keyExtractor={(item) => item.id.toString()}
-            data={sortedTasks}
-            renderItem={({ item }) => (
-              <View>
-                <TouchableOpacity
-                  style={styles.flatListDesign}
-                  onLongPress={() => {
-                    !isMultipleSelect ? enableMultipleSelect() : {};
-                  }}
-                  onPress={() => {
-                    handleSelectItem(item);
-                  }}
-                >
-                  {isMultipleSelect ? (
-                    selectedIdentifier.includes(item.id) ? (
-                      <Feather
-                        name="check-circle"
-                        size={14}
-                        color="black"
-                        style={{ marginRight: wp(1) }}
-                      />
-                    ) : (
-                      <Feather
-                        name="circle"
-                        size={14}
-                        color="black"
-                        style={{ marginRight: wp(1) }}
-                      />
-                    )
-                  ) : null}
-                  <View>
-                    <Text style={styles.taskTitle}>{item.taskTitle}</Text>
-                    <Text style={styles.taskDueDate}>
-                      {formatDateString(item.dueDate)}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-        </View>
-      ) : null}
-
+    <View style={styles.container}>
+      <Text style={styles.header}>On Going</Text>
+      <FlatList
+        data={tasks.filter((task) => task.status === "On Going")}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.listContainer}
+      />
       <View
         style={{
           position: "absolute",
@@ -377,8 +163,11 @@ const OngoingScreen = () => {
         {/*Change to the floating button rotation shit  */}
         <FloatingButton
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
-          onDeleteAllItemsPress={() => deleteItems()}
-          onCompleteAllItemsPress={() => completeTask()}
+          onDeleteAllItemsPress={function (): void {
+            throw new Error(
+              "Where's the function, cuh? Define it first, bish."
+            );
+          }}
         ></FloatingButton>
       </View>
       <AddModal //use this to show addModal
@@ -403,38 +192,48 @@ const OngoingScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  mainContainer: {
+  container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+    paddingHorizontal: wp(5),
   },
-  statusTitle: {
+  header: {
     fontFamily: "kodchasan-bold",
-    fontSize: hp(3),
+    fontSize: wp(6.5),
+    color: "#414042",
+    marginBottom: hp(0.5),
   },
-  flatListDesign: {
+  listContainer: {
+    marginBottom: hp(5),
+  },
+  taskContainer: {
     flexDirection: "row",
-    marginVertical: hp(1),
-    marginHorizontal: wp(3),
     alignItems: "center",
+    marginBottom: hp(1),
   },
-  statusView: { marginHorizontal: wp(1), paddingHorizontal: wp(5), flex: 1 },
-  taskTitle: {
-    fontFamily: "kodchasan-light",
-    fontSize: hp(2.2),
+  checkbox: {
+    width: wp(3),
+    height: wp(3),
+    borderRadius: wp(2.5),
+    borderWidth: 2,
+    marginRight: wp(3),
   },
-  taskDueDate: {
-    fontFamily: "kodchasan-light",
-    fontSize: hp(1.2),
+  checkboxCompleted: {
+    backgroundColor: "black",
+    borderColor: "black",
   },
-  sortIndicator: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 30,
-    height: 30,
+  checkboxOverdue: {
+    backgroundColor: "#D20062",
+    borderColor: "#D20062",
+  },
+  checkboxDefault: {
+    backgroundColor: "transparent",
     borderColor: "#000",
-    position: "absolute",
-    right: 10,
-    top: 10,
+  },
+  taskText: {
+    fontFamily: "kodchasan-regular",
+    fontSize: wp(4),
+    flex: 1,
   },
 });
 
