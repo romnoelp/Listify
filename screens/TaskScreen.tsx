@@ -141,11 +141,7 @@ const TaskScreen = () => {
           .doc(user.displayName.toString())
           .collection("Tasks")
           .add({
-<<<<<<< Updated upstream
             taskTitle: taskTitle.trim() === "" ? "No Title" : taskTitle,
-=======
-            taskTitle,
->>>>>>> Stashed changes
             taskDescription,
             dueDate: dueDate,
             status: statusCheck,
@@ -342,7 +338,7 @@ const TaskScreen = () => {
       ) : null}
       {TasksList.filter((item) => item.status === "Completed").length !== 0 ? (
         <View style={styles.statusView}>
-          <Text style={styles.statusTitle}>Finished</Text>
+          <Text style={styles.statusTitle}>Completed</Text>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
             data={TasksList.filter((item) => item.status === "Completed")}
@@ -384,6 +380,7 @@ const TaskScreen = () => {
           />
         </View>
       ) : null}
+
       <View style={{
         borderWidth: 0, // Increase border width for a more visible rectangle
         borderRadius: 1, // Add border radius for rounded corners
@@ -391,28 +388,22 @@ const TaskScreen = () => {
         paddingHorizontal: 150,
         bottom: wp(-18),
         backgroundColor: "white"
+        }}>
+        <View
+          style={{
+            position: "absolute",
+            bottom: wp(10),
+            right: wp(40),
 
-      
-      }}>
-      <View
-        style={{
-          position: "absolute",
-          bottom: wp(10),
-          right: wp(40),
-
-        }}
-      >
-        {/*Change to the floating button rotation shit  */}
-        <FloatingButton
-          onAddItemsPress={() => setIsAddTaskModalVisible(true)}
-          onDeleteAllItemsPress={() => deleteItems()}
-          onCompleteAllItemsPress={() => completeTask()}
-<<<<<<< Updated upstream
-        ></FloatingButton>
-=======
-        />
->>>>>>> Stashed changes
-      </View>
+          }}
+        >
+          {/*Change to the floating button rotation shit  */}
+          <FloatingButton
+            onAddItemsPress={() => setIsAddTaskModalVisible(true)}
+            onDeleteAllItemsPress={() => deleteItems()}
+            onCompleteAllItemsPress={() => completeTask()}
+          />
+        </View>
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}
