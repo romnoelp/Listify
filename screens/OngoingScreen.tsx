@@ -22,7 +22,7 @@ import Toast from "react-native-simple-toast";
 import FloatingButton from "../components/FloatingButton";
 import firebase from "firebase/compat/app";
 import { useFocusEffect } from "@react-navigation/native";
-
+import { Entypo } from '@expo/vector-icons';
 
 const OngoingScreen = () => {
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
@@ -212,7 +212,7 @@ const OngoingScreen = () => {
   };
 
   const handleSelectItem = (item: ToDoTask) => {
-    
+    // select or unselect
     if (isMultipleSelect) {
       if (selectedIdentifier.includes(item.id)) {
         setSelectedTasks(
@@ -269,7 +269,7 @@ const OngoingScreen = () => {
         }
       }
       if (minIndex !== i) {
-        
+        // Swap elements
         const temp = sortedTasks[i];
         sortedTasks[i] = sortedTasks[minIndex];
         sortedTasks[minIndex] = temp;
@@ -279,6 +279,7 @@ const OngoingScreen = () => {
     return sortedTasks;
   };
   
+  // Selection sort for sorting tasks by due date in descending order
   const selectionSortDescending = (tasksList: ToDoTask[]): ToDoTask[] => {
     const sortedTasks = [...tasksList];
   
@@ -290,7 +291,7 @@ const OngoingScreen = () => {
         }
       }
       if (maxIndex !== i) {
-        
+        // Swap elements
         const temp = sortedTasks[i];
         sortedTasks[i] = sortedTasks[maxIndex];
         sortedTasks[maxIndex] = temp;
@@ -312,6 +313,13 @@ const OngoingScreen = () => {
       {TasksList.filter((item) => item.status === "OnGoing").length !== 0 ? (
         <View style={styles.statusView}>
           <Text style={styles.statusTitle}>On Going</Text>
+                {/* Arrow indicator for sorting */}
+            <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
+              <Text>{isAscending ?<Entypo name="arrow-with-circle-up" size={28} color="black" /> 
+              : <Entypo name="arrow-with-circle-down" size={28} color="black" />}</Text>
+            </TouchableOpacity>
+
+
           <FlatList
             keyExtractor={(item) => item.id.toString()}
             data={sortedTasks}
@@ -366,14 +374,12 @@ const OngoingScreen = () => {
           alignItems: "center",
         }}
       >
-        {/* Floating button component */}
+        {/*Change to the floating button rotation shit  */}
         <FloatingButton
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
           onDeleteAllItemsPress={() => deleteItems()}
           onCompleteAllItemsPress={() => completeTask()}
-          OnAscendingByDateItemsPress={handleSortToggle}
-          OnDescendingByDateItemsPress={handleSortToggle}
-        />
+        ></FloatingButton>
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}
