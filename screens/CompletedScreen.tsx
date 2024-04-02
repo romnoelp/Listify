@@ -90,6 +90,32 @@ const CompletedScreen = () => {
     setShowCalendar(!showCalendar);
   };
 
+  const completeTask = () => {
+    //comeplete the task when flag was pressed
+    try {
+      if (user && user.displayName) {
+        const docRef = db
+          .collection("users")
+          .doc(user.displayName.toString())
+          .collection("Tasks");
+        selectedTasks.forEach(async (item) => {
+          await docRef.doc(item.id.toString()).update({
+            status: "Completed",
+          });
+          updateTask(item.id, { status: "Completed" });
+        });
+        setIsMultipleSelect(false);
+        setSelectedTasks([]);
+        setSelectedIdentifier([]);
+        if (selectedTasks.length === 0) {
+          Toast.show("Please select a task to be completed", Toast.SHORT);
+        }
+      }
+    } catch (error) {
+      Toast.show("Error updating in database, try again later", Toast.SHORT);
+    }
+  };
+
   const onChangeDate = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (event.type === "set" && selectedDate) {
       const currentDate = selectedDate;
@@ -286,11 +312,6 @@ const CompletedScreen = () => {
       {sortedTasks.length !== 0 ? (
         <View style={styles.statusView}>
           <Text style={styles.statusTitle}>Completed</Text>
-          {/* Arrow indicator for sorting */}
-          <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
-            <Text>{isAscending ?<Entypo name="arrow-with-circle-up" size={28} color="black" /> 
-            : <Entypo name="arrow-with-circle-down" size={28} color="black" />}</Text>
-          </TouchableOpacity>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
             data={sortedTasks}
@@ -345,9 +366,11 @@ const CompletedScreen = () => {
       >
         <FloatingButton
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
-          onDeleteAllItemsPress={() => deleteItems()} onCompleteAllItemsPress={function (): void {
-            throw new Error("Function not implemented.");
-          } }        />
+          onDeleteAllItemsPress={() => deleteItems()}
+          onCompleteAllItemsPress={() => completeTask()}
+          OnAscendingByDateItemsPress={handleSortToggle}
+          OnDescendingByDateItemsPress={handleSortToggle}
+        />
       </View>
       <AddModal
         dueDate={dueDate}
