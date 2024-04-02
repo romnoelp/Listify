@@ -54,13 +54,13 @@ const FloatingButton: React.FC<Props> = ({
       {
         translateY: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -10],
+          outputRange: [0, -40],
         }),
       },
       {
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, 100],
+          outputRange: [0, 65],
         }),
       },
     ],
@@ -72,13 +72,49 @@ const FloatingButton: React.FC<Props> = ({
       {
         translateY: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -10],
+          outputRange: [0, -40],
         }),
       },
       {
         translateX: animation.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -100],
+          outputRange: [0, -65],
+        }),
+      },
+    ],
+  };
+  
+  const sortUpAllItemStyle = {
+    transform: [
+      { scale: animation },
+      {
+        translateY: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 20],
+        }),
+      },
+      {
+        translateX: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, -95],
+        }),
+      },
+    ],
+  };
+
+  const sortDownAllItemStyle = {
+    transform: [
+      { scale: animation },
+      {
+        translateY: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 20],
+        }),
+      },
+      {
+        translateX: animation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 95],
         }),
       },
     ],
@@ -141,6 +177,41 @@ const FloatingButton: React.FC<Props> = ({
           ]}
         >
           <Entypo name="flag" size={25} color="#EBF7F9" />
+        </Animated.View>
+      </TouchableWithoutFeedback>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          onCompleteAllItemsPress();
+          resetRotation();
+        }}
+      >
+        <Animated.View
+          style={[
+            styles.button,
+            styles.secondary,
+            styles.menu,
+            sortUpAllItemStyle,
+          ]}
+        >
+          <Entypo name="chevron-with-circle-down" size={25} color="#EBF7F9" />
+        </Animated.View>
+      </TouchableWithoutFeedback>
+
+      <TouchableWithoutFeedback
+        onPress={() => {
+          onCompleteAllItemsPress();
+          resetRotation();
+        }}
+      >
+        <Animated.View
+          style={[
+            styles.button,
+            styles.secondary,
+            styles.menu,
+            sortDownAllItemStyle,
+          ]}
+        >
+          <Entypo name="chevron-with-circle-up" size={25} color="#EBF7F9" />
         </Animated.View>
       </TouchableWithoutFeedback>
 
