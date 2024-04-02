@@ -178,11 +178,17 @@ const OverdueScreen = () => {
       "hardwareBackPress",
       handleBackPress
     );
+    const sortTasksList =()=> {if (TasksList && TasksList.length > 0) {
+      const sortedTasks = selectionSortAscending(
+        TasksList.filter((item) => item.status === "OverDue")
+      );
+      setNewTasksList(sortedTasks);
+    }}
 
     return () => {
       backPressHandler.remove();
     };
-  }, []);
+  }, [TasksList]);
 
   const completeTask = () => {
     //comeplete the task when flag was pressed
@@ -267,6 +273,16 @@ const OverdueScreen = () => {
   
     return sortedTasks;
   };
+  useEffect(() => {
+    // Sort the tasks whenever TasksList changes
+    if (TasksList && TasksList.length > 0) {
+      const sortedTasks = selectionSortAscending(
+        TasksList.filter((item) => item.status === "OverDue")
+      );
+      setNewTasksList(sortedTasks);
+    }
+  }, [TasksList]);
+  
 
   const selectionSortDescending = (tasksList: ToDoTask[]): ToDoTask[] => {
     const sortedTasks = [...tasksList];
@@ -291,9 +307,9 @@ const OverdueScreen = () => {
   const handleSortToggle = () => {
     setIsAscending((prev) => !prev); // Toggle sorting order
   };
-  const sortedTasks = isAscending
-    ? selectionSortAscending(TasksList.filter((item) => item.status === "OverDue"))
-    : selectionSortDescending(TasksList.filter((item) => item.status === "OverDue"));
+  const sortedTasks = 
+    selectionSortAscending(TasksList.filter((item) => item.status === "OverDue"))
+ 
 
 
   return (
@@ -301,11 +317,6 @@ const OverdueScreen = () => {
       {sortedTasks.length !== 0 ? (
         <View style={styles.statusView}>
           <Text style={styles.statusTitle}>Overdue</Text>
-          {/* Arrow indicator for sorting */}
-          <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
-              <Text>{isAscending ?<Entypo name="chevron-with-circle-up" size={28} color="black" /> 
-              : <Entypo name="chevron-with-circle-down" size={28} color="black" />}</Text>
-          </TouchableOpacity>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
             data={sortedTasks}
