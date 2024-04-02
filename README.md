@@ -10,22 +10,11 @@
   <h1><b>𝙰𝚙𝚙𝚕𝚒𝚌𝚊𝚝𝚒𝚘𝚗 𝙴𝚡𝚙𝚎𝚛𝚒𝚎𝚗𝚌𝚎</b></h1>
 </div>
 
-<div align="center">
-  <h1><b>𝙰𝚙𝚙𝚕𝚒𝚌𝚊𝚝𝚒𝚘𝚗 𝙴𝚡𝚙𝚎𝚛𝚒𝚎𝚗𝚌𝚎</b></h1>
-</div>
-
 <div align="center" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-   <p style="text-align: justify;">𝚄𝚙𝚘𝚗 𝚘𝚙𝚎𝚗𝚒𝚗𝚐 𝚝𝚑𝚎 𝚊𝚙𝚙, 𝚝𝚑𝚎 𝚞𝚜𝚎𝚛 𝚠𝚒𝚕𝚕 𝚋𝚎 𝚐𝚛𝚎𝚎𝚝𝚎𝚍 𝚠𝚒𝚝𝚑 𝚝𝚑𝚎 𝚕𝚊𝚗𝚍𝚒𝚗𝚐 𝚜𝚌𝚛𝚎𝚎𝚗 𝚠𝚑𝚎𝚛𝚎 𝚑𝚎 𝚌𝚊𝚗 𝚎𝚒𝚝𝚑𝚎𝚛 𝚕𝚘𝚐𝚒𝚗 𝚘𝚛 𝚛𝚎𝚐𝚒𝚜𝚝𝚎𝚛.</p>
-   <div style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-      <div style="margin-right: 20px;">
-         <h3>𝙻𝚊𝚗𝚍𝚒𝚗𝚐 𝚂𝚌𝚛𝚎𝚎𝚗</h3>
-         <img src="./screenshots/LandingScreen.png" width="218" height="501" style="margin: 10px;">
-      </div>
-     <div style="margin-right: 20px;">
-         <h3>𝙻𝚊𝚗𝚍𝚒𝚗𝚐 𝚂𝚌𝚛𝚎𝚎𝚗</h3>
-         <img src="./screenshots/LandingScreen.png" width="218" height="501" style="margin: 10px;">
-      </div>
-   </div>
+ <img src="https://github.com/romnoelp/Listify/assets/100058219/f8cab014-1b17-439d-9381-b9a9e0f6142e" width="30%"></img> <img src="https://github.com/romnoelp/Listify/assets/100058219/0a93c40f-5496-4953-bcd1-96afa12d356f" width="30%"></img> <img src="https://github.com/romnoelp/Listify/assets/100058219/ef13e115-b829-495a-87d0-06fb56ee9298" width="30%"></img> 
+</div>
+<div align="center">
+   <p style="text-align: justify;">𝚄𝚙𝚘𝚗 𝚘𝚙𝚎𝚗𝚒𝚗𝚐 𝚝𝚑𝚎 𝚊𝚙𝚙𝚕𝚒𝚊𝚝𝚒𝚘𝚗, 𝚝𝚑𝚎 𝚞𝚜𝚎𝚛 𝚠𝚒𝚕𝚕 𝚋𝚎 𝚐𝚛𝚎𝚎𝚝𝚎𝚍 𝚠𝚒𝚝𝚑 𝚊 𝚕𝚊𝚗𝚍𝚒𝚗𝚐 𝚙𝚊𝚐𝚎 𝚠𝚑𝚎𝚛𝚎 𝚑𝚎 𝚌𝚊𝚗 𝚌𝚑𝚘𝚘𝚜𝚎 𝚝𝚘 𝚎𝚒𝚝𝚑𝚎𝚛 𝚕𝚘𝚐𝚒𝚗 𝚘𝚛 𝚛𝚎𝚐𝚒𝚜𝚝𝚎𝚛.</p>
 </div>
 
 <div align="center">
