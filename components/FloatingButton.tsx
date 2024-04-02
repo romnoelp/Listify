@@ -179,44 +179,6 @@ const FloatingButton: React.FC<Props> = ({
           <Entypo name="flag" size={25} color="#EBF7F9" />
         </Animated.View>
       </TouchableWithoutFeedback>
-<<<<<<< Updated upstream
-      <TouchableWithoutFeedback
-        onPress={() => {
-          onCompleteAllItemsPress();
-          resetRotation();
-        }}
-      >
-        <Animated.View
-          style={[
-            styles.button,
-            styles.secondary,
-            styles.menu,
-            sortUpAllItemStyle,
-          ]}
-        >
-          <Entypo name="chevron-with-circle-down" size={25} color="#EBF7F9" />
-        </Animated.View>
-      </TouchableWithoutFeedback>
-
-      <TouchableWithoutFeedback
-        onPress={() => {
-          onCompleteAllItemsPress();
-          resetRotation();
-        }}
-      >
-        <Animated.View
-          style={[
-            styles.button,
-            styles.secondary,
-            styles.menu,
-            sortDownAllItemStyle,
-          ]}
-        >
-          <Entypo name="chevron-with-circle-up" size={25} color="#EBF7F9" />
-        </Animated.View>
-      </TouchableWithoutFeedback>
-=======
->>>>>>> Stashed changes
 
       
       <TouchableWithoutFeedback
