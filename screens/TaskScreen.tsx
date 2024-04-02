@@ -35,7 +35,6 @@ const TaskScreen = () => {
   const [initialFetch, setInitialFetch] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState<ToDoTask[]>([]);
   const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
-  const [isAscending, setIsAscending] = useState(true); 
 
   const user = auth.currentUser;
 
@@ -186,27 +185,14 @@ const TaskScreen = () => {
 
   const completeTask = () => {
     //comeplete the task when flag was pressed
-    try {
-      if (user && user.displayName) {
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-        selectedTasks.forEach(async (item) => {
-          await docRef.doc(item.id.toString()).update({
-            status: "Completed",
-          });
-          updateTask(item.id, { status: "Completed" });
-        });
-        setIsMultipleSelect(false);
-        setSelectedTasks([]);
-        setSelectedIdentifier([]);
-        if (selectedTasks.length === 0) {
-          Toast.show("Please select a task to be completed", Toast.SHORT);
-        }
-      }
-    } catch (error) {
-      Toast.show("Error updating in database, try again later", Toast.SHORT);
+    selectedTasks.forEach((item) => {
+      updateTask(item.id, { status: "Completed" });
+    });
+    setIsMultipleSelect(false);
+    setSelectedTasks([]);
+    setSelectedIdentifier([]);
+    if (selectedTasks.length === 0) {
+      Toast.show("Please select a task to be completed", Toast.SHORT);
     }
   };
 
@@ -256,56 +242,7 @@ const TaskScreen = () => {
       }
     }
   };
-
-  const selectionSortAscending = (tasksList: ToDoTask[]): ToDoTask[] => {
-    const sortedTasks = [...tasksList];
-  
-    for (let i = 0; i < sortedTasks.length - 1; i++) {
-      let minIndex = i;
-      for (let j = i + 1; j < sortedTasks.length; j++) {
-        if (sortedTasks[j].dueDate < sortedTasks[minIndex].dueDate) {
-          minIndex = j;
-        }
-      }
-      if (minIndex !== i) {
-        
-        const temp = sortedTasks[i];
-        sortedTasks[i] = sortedTasks[minIndex];
-        sortedTasks[minIndex] = temp;
-      }
-    }
-  
-    return sortedTasks;
-  };
-  
-  const selectionSortDescending = (tasksList: ToDoTask[]): ToDoTask[] => {
-    const sortedTasks = [...tasksList];
-  
-    for (let i = 0; i < sortedTasks.length - 1; i++) {
-      let maxIndex = i;
-      for (let j = i + 1; j < sortedTasks.length; j++) {
-        if (sortedTasks[j].dueDate > sortedTasks[maxIndex].dueDate) {
-          maxIndex = j;
-        }
-      }
-      if (maxIndex !== i) {
-        
-        const temp = sortedTasks[i];
-        sortedTasks[i] = sortedTasks[maxIndex];
-        sortedTasks[maxIndex] = temp;
-      }
-    }
-  
-    return sortedTasks;
-  };
-
-  const handleSortToggle = () => {
-    setIsAscending((prev) => !prev); // Toggle sorting order
-  };
-  const sortedTasks = isAscending
-    ? selectionSortAscending(TasksList.filter((item) => item.status === "OnGoing"))
-    : selectionSortDescending(TasksList.filter((item) => item.status === "OnGoing"));
-    
+  //remove comments later
   return (
     <View style={styles.mainContainer}>
       {TasksList.filter((item) => item.status === "OnGoing").length !== 0 ? (
@@ -459,9 +396,7 @@ const TaskScreen = () => {
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
           onDeleteAllItemsPress={() => deleteItems()}
           onCompleteAllItemsPress={() => completeTask()}
-          OnAscendingByDateItemsPress={handleSortToggle}
-          OnDescendingByDateItemsPress={handleSortToggle}
-        />
+        ></FloatingButton>
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}
