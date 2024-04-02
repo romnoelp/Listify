@@ -134,23 +134,22 @@ const TaskScreen = () => {
     //save task after finishing in addModal
     try {
       if (user && user.displayName) {
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-
         const CurrentDate = new Date();
         const statusCheck = CurrentDate > dueDate ? "OverDue" : "OnGoing";
-        await docRef.add({
-          taskTitle,
-          taskDescription,
-          dueDate: dueDate,
-          status: statusCheck,
-        });
+        const docRef = await db
+          .collection("users")
+          .doc(user.displayName.toString())
+          .collection("Tasks")
+          .add({
+            taskTitle: taskTitle.trim() === "" ? "No Title" : taskTitle,
+            taskDescription,
+            dueDate: dueDate,
+            status: statusCheck,
+          });
 
         const newTask: ToDoTask = {
           id: docRef.id,
-          taskTitle,
+          taskTitle: taskTitle.trim() === "" ? "No Title" : taskTitle,
           taskDescription,
           dueDate,
           status: statusCheck,
@@ -217,7 +216,7 @@ const TaskScreen = () => {
     if (user && user.displayName) {
       try {
         const dbRef = db
-          .collection("uesrs")
+          .collection("users")
           .doc(user.displayName.toString())
           .collection("Tasks");
         const batch = db.batch();
@@ -237,6 +236,7 @@ const TaskScreen = () => {
         Toast.show("Items deleted successfully", Toast.SHORT);
         setSelectedTasks([]);
         setSelectedIdentifier([]);
+        setIsMultipleSelect(false);
       } catch (error) {
         Toast.show("Error deleting items, try again later", Toast.SHORT);
       }

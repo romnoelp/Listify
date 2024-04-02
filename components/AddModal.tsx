@@ -53,7 +53,6 @@ const AddModal = ({
   closeAddTaskModal,
 }: AddModalProps) => {
   return (
-    
     <Modal
       visible={isAddTaskModalVisible}
       onRequestClose={() => closeAddTaskModal()}
@@ -98,7 +97,7 @@ const AddModal = ({
           />
         </View>
         <View style={{ backgroundColor: "#414042", flex: 1 }}>
-          <View style={{ marginHorizontal: wp(10), marginTop: hp(2) }}>
+          <View style={{ marginHorizontal: wp(10), marginTop: hp(3) }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Entypo name="calendar" size={24} color="white" />
               <Text style={styles.modalLabel}>Due Date</Text>
@@ -178,8 +177,7 @@ const AddModal = ({
           />
         )}
       </View>
-      <BlurView intensity={100} tint="light" style={{flex: 1}}>
-      </BlurView>
+      <BlurView intensity={100} tint="light" style={{ flex: 1 }}></BlurView>
     </Modal>
   );
 };
