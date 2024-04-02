@@ -18,12 +18,16 @@ interface Props {
   onDeleteAllItemsPress: () => void;
   onAddItemsPress: () => void;
   onCompleteAllItemsPress: () => void;
+  OnAscendingByDateItemsPress: () => void;
+  OnDescendingByDateItemsPress: () => void;
 }
 
 const FloatingButton: React.FC<Props> = ({
   onDeleteAllItemsPress,
   onAddItemsPress,
   onCompleteAllItemsPress,
+  OnAscendingByDateItemsPress,
+  OnDescendingByDateItemsPress,
 }) => {
   const [animation] = useState(new Animated.Value(0));
   const [open, setOpen] = useState(false);
@@ -181,7 +185,7 @@ const FloatingButton: React.FC<Props> = ({
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
         onPress={() => {
-          onCompleteAllItemsPress();
+          OnAscendingByDateItemsPress();
           resetRotation();
         }}
       >
@@ -199,7 +203,7 @@ const FloatingButton: React.FC<Props> = ({
 
       <TouchableWithoutFeedback
         onPress={() => {
-          onCompleteAllItemsPress();
+          OnAscendingByDateItemsPress();
           resetRotation();
         }}
       >

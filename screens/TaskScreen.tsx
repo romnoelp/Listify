@@ -35,6 +35,7 @@ const TaskScreen = () => {
   const [initialFetch, setInitialFetch] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState<ToDoTask[]>([]);
   const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
+  const [isAscending, setIsAscending] = useState(true); 
 
   const user = auth.currentUser;
 
@@ -255,7 +256,56 @@ const TaskScreen = () => {
       }
     }
   };
-  //remove comments later
+
+  const selectionSortAscending = (tasksList: ToDoTask[]): ToDoTask[] => {
+    const sortedTasks = [...tasksList];
+  
+    for (let i = 0; i < sortedTasks.length - 1; i++) {
+      let minIndex = i;
+      for (let j = i + 1; j < sortedTasks.length; j++) {
+        if (sortedTasks[j].dueDate < sortedTasks[minIndex].dueDate) {
+          minIndex = j;
+        }
+      }
+      if (minIndex !== i) {
+        
+        const temp = sortedTasks[i];
+        sortedTasks[i] = sortedTasks[minIndex];
+        sortedTasks[minIndex] = temp;
+      }
+    }
+  
+    return sortedTasks;
+  };
+  
+  const selectionSortDescending = (tasksList: ToDoTask[]): ToDoTask[] => {
+    const sortedTasks = [...tasksList];
+  
+    for (let i = 0; i < sortedTasks.length - 1; i++) {
+      let maxIndex = i;
+      for (let j = i + 1; j < sortedTasks.length; j++) {
+        if (sortedTasks[j].dueDate > sortedTasks[maxIndex].dueDate) {
+          maxIndex = j;
+        }
+      }
+      if (maxIndex !== i) {
+        
+        const temp = sortedTasks[i];
+        sortedTasks[i] = sortedTasks[maxIndex];
+        sortedTasks[maxIndex] = temp;
+      }
+    }
+  
+    return sortedTasks;
+  };
+
+  const handleSortToggle = () => {
+    setIsAscending((prev) => !prev); // Toggle sorting order
+  };
+  const sortedTasks = isAscending
+    ? selectionSortAscending(TasksList.filter((item) => item.status === "OnGoing"))
+    : selectionSortDescending(TasksList.filter((item) => item.status === "OnGoing"));
+    
   return (
     <View style={styles.mainContainer}>
       {TasksList.filter((item) => item.status === "OnGoing").length !== 0 ? (
@@ -409,7 +459,9 @@ const TaskScreen = () => {
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
           onDeleteAllItemsPress={() => deleteItems()}
           onCompleteAllItemsPress={() => completeTask()}
-        ></FloatingButton>
+          OnAscendingByDateItemsPress={handleSortToggle}
+          OnDescendingByDateItemsPress={handleSortToggle}
+        />
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}
