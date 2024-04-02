@@ -179,6 +179,7 @@ const FloatingButton: React.FC<Props> = ({
           <Entypo name="flag" size={25} color="#EBF7F9" />
         </Animated.View>
       </TouchableWithoutFeedback>
+<<<<<<< Updated upstream
       <TouchableWithoutFeedback
         onPress={() => {
           onCompleteAllItemsPress();
@@ -214,7 +215,10 @@ const FloatingButton: React.FC<Props> = ({
           <Entypo name="chevron-with-circle-up" size={25} color="#EBF7F9" />
         </Animated.View>
       </TouchableWithoutFeedback>
+=======
+>>>>>>> Stashed changes
 
+      
       <TouchableWithoutFeedback
         onPress={() => {
           onAddItemsPress();

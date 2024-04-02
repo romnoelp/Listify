@@ -89,6 +89,7 @@ const CompletedScreen = () => {
 
   const saveTask = async () => {
     try {
+<<<<<<< Updated upstream
       if (user) {
         const docRef = db
           .collection("users")
@@ -104,6 +105,21 @@ const CompletedScreen = () => {
           dueDate: dueDate,
           status: statusCheck,
         });
+=======
+      if (user && user.displayName) {
+        const CurrentDate = new Date();
+        const statusCheck = CurrentDate > dueDate ? "OverDue" : "OnGoing";
+        const docRef = await db
+          .collection("users")
+          .doc(user.displayName.toString())
+          .collection("Tasks")
+          .add({
+            taskTitle,
+            taskDescription,
+            dueDate: dueDate,
+            status: statusCheck,
+          });
+>>>>>>> Stashed changes
 
         const newTask: ToDoTask = {
           id: docRef.id,
@@ -140,10 +156,10 @@ const CompletedScreen = () => {
     <View style={styles.mainContainer}>
       {sortedTasks.length !== 0 ? (
         <View style={styles.statusView}>
-          <Text style={styles.statusTitle}>Completed</Text>
+          <Text style={styles.statusTitle}>Finished</Text>
           <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
-              <Text>{isAscending ?<Entypo name="arrow-with-circle-up" size={28} color="black" /> 
-              : <Entypo name="arrow-with-circle-down" size={28} color="black" />}</Text>
+              <Text>{isAscending ?<Entypo name="chevron-with-circle-up" size={28} color="black" /> 
+              : <Entypo name="chevron-with-circle-down" size={28} color="black" />}</Text>
           </TouchableOpacity>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
@@ -199,6 +215,7 @@ const CompletedScreen = () => {
         {/*Change to the floating button rotation shit  */}
         <FloatingButton
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
+<<<<<<< Updated upstream
           onDeleteAllItemsPress={function (): void {
             throw new Error(
               "Where's the function, cuh? Define it first, bish."
@@ -206,6 +223,11 @@ const CompletedScreen = () => {
           } } onCompleteAllItemsPress={function (): void {
             throw new Error("Function not implemented.");
           } }        ></FloatingButton>
+=======
+          onDeleteAllItemsPress={() => deleteItems()}
+          onCompleteAllItemsPress={() => completeTask()}
+        />
+>>>>>>> Stashed changes
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}
@@ -236,9 +258,13 @@ const styles = StyleSheet.create({
   },
   header: {
     fontFamily: "kodchasan-bold",
+<<<<<<< Updated upstream
     fontSize: wp(6.5),
     color: "#414042",
     marginBottom: hp(0.5),
+=======
+    fontSize: hp(2.5),
+>>>>>>> Stashed changes
   },
   listContainer: {
     marginBottom: hp(5),
@@ -248,6 +274,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: hp(1),
   },
+<<<<<<< Updated upstream
   checkbox: {
     width: wp(3),
     height: wp(3),
@@ -265,6 +292,23 @@ const styles = StyleSheet.create({
   },
   checkboxDefault: {
     backgroundColor: "transparent",
+=======
+  statusView: { marginHorizontal: wp(1), paddingHorizontal: wp(5), flex: 1 },
+  taskTitle: {
+    fontFamily: "kodchasan-light",
+    fontSize: hp(1.8),
+  },
+  taskDueDate: {
+    fontFamily: "kodchasan-light",
+    fontSize: hp(1.2),
+    marginLeft: wp(0.3)
+  },
+  sortIndicator: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 30,
+    height: 30,
+>>>>>>> Stashed changes
     borderColor: "#000",
   },
   taskText: {

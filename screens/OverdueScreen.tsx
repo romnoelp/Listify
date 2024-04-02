@@ -33,7 +33,16 @@ const OverdueScreen = () => {
   const [showClock, setShowClock] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
+<<<<<<< Updated upstream
   const { addTask, TasksList } = useTaskContext();
+=======
+  const { addTask, TasksList, setNewTasksList, updateTask } = useTaskContext();
+  const [isMultipleSelect, setIsMultipleSelect] = useState(false);
+  const [initialFetch, setInitialFetch] = useState(false);
+  const [selectedTasks, setSelectedTasks] = useState<ToDoTask[]>([]);
+  const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
+  const [isAscending, setIsAscending] = useState(true); // State to track sorting order
+>>>>>>> Stashed changes
 
   const user = auth.currentUser;
   const [tasks, setTasks] = useState<Task[]>([
@@ -147,9 +156,10 @@ const OverdueScreen = () => {
       {sortedTasks.length !== 0 ? (
         <View style={styles.statusView}>
           <Text style={styles.statusTitle}>Overdue</Text>
+          {/* Arrow indicator for sorting */}
           <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
-              <Text>{isAscending ?<Entypo name="arrow-with-circle-up" size={28} color="black" /> 
-              : <Entypo name="arrow-with-circle-down" size={28} color="black" />}</Text>
+              <Text>{isAscending ?<Entypo name="chevron-with-circle-up" size={28} color="black" /> 
+              : <Entypo name="chevron-with-circle-down" size={28} color="black" />}</Text>
           </TouchableOpacity>
           <FlatList
             keyExtractor={(item) => item.id.toString()}
@@ -198,13 +208,18 @@ const OverdueScreen = () => {
           position: "absolute",
           bottom: wp(10),
           right: wp(40),
-          left: wp(40),
-          justifyContent: "center",
-          alignItems: "center",
         }}
       >
+<<<<<<< Updated upstream
 
 
+=======
+        <FloatingButton
+          onAddItemsPress={() => setIsAddTaskModalVisible(true)}
+          onDeleteAllItemsPress={() => deleteItems()} onCompleteAllItemsPress={function (): void {
+            throw new Error("Function not implemented.");
+          } }        />
+>>>>>>> Stashed changes
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}
@@ -235,9 +250,13 @@ const styles = StyleSheet.create({
   },
   header: {
     fontFamily: "kodchasan-bold",
+<<<<<<< Updated upstream
     fontSize: wp(6.5),
     color: "#414042",
     marginBottom: hp(0.5),
+=======
+    fontSize: hp(2.5),
+>>>>>>> Stashed changes
   },
   listContainer: {
     marginBottom: hp(5),
@@ -247,6 +266,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: hp(1),
   },
+<<<<<<< Updated upstream
   checkbox: {
     width: wp(3),
     height: wp(3),
@@ -257,6 +277,17 @@ const styles = StyleSheet.create({
   checkboxCompleted: {
     backgroundColor: "black",
     borderColor: "black",
+=======
+  statusView: { marginHorizontal: wp(1), paddingHorizontal: wp(5), flex: 1 },
+  taskTitle: {
+    fontFamily: "kodchasan-light",
+    fontSize: hp(1.8),
+  },
+  taskDueDate: {
+    fontFamily: "kodchasan-light",
+    fontSize: hp(1.2),
+    marginLeft: wp(0.3)
+>>>>>>> Stashed changes
   },
   checkboxOverdue: {
     backgroundColor: "transparent",
