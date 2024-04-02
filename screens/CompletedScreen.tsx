@@ -90,32 +90,6 @@ const CompletedScreen = () => {
     setShowCalendar(!showCalendar);
   };
 
-  const completeTask = () => {
-    //comeplete the task when flag was pressed
-    try {
-      if (user && user.displayName) {
-        const docRef = db
-          .collection("users")
-          .doc(user.displayName.toString())
-          .collection("Tasks");
-        selectedTasks.forEach(async (item) => {
-          await docRef.doc(item.id.toString()).update({
-            status: "Completed",
-          });
-          updateTask(item.id, { status: "Completed" });
-        });
-        setIsMultipleSelect(false);
-        setSelectedTasks([]);
-        setSelectedIdentifier([]);
-        if (selectedTasks.length === 0) {
-          Toast.show("Please select a task to be completed", Toast.SHORT);
-        }
-      }
-    } catch (error) {
-      Toast.show("Error updating in database, try again later", Toast.SHORT);
-    }
-  };
-
   const onChangeDate = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (event.type === "set" && selectedDate) {
       const currentDate = selectedDate;
@@ -169,7 +143,7 @@ const CompletedScreen = () => {
           .doc(user.displayName.toString())
           .collection("Tasks")
           .add({
-            taskTitle,
+            taskTitle: taskTitle.trim() === "" ? "No Title" : taskTitle,
             taskDescription,
             dueDate: dueDate,
             status: statusCheck,
@@ -177,7 +151,7 @@ const CompletedScreen = () => {
 
         const newTask: ToDoTask = {
           id: docRef.id,
-          taskTitle,
+          taskTitle: taskTitle.trim() === "" ? "No Title" : taskTitle,
           taskDescription,
           dueDate,
           status: statusCheck,
@@ -209,6 +183,19 @@ const CompletedScreen = () => {
       backPressHandler.remove();
     };
   }, []);
+
+  const completeTask = () => {
+    //comeplete the task when flag was pressed
+    selectedTasks.forEach((item) => {
+      updateTask(item.id, { status: "Completed" });
+    });
+    setIsMultipleSelect(false);
+    setSelectedTasks([]);
+    setSelectedIdentifier([]);
+    if (selectedTasks.length === 0) {
+      Toast.show("Please select a task to be completed", Toast.SHORT);
+    }
+  };
 
   const handleSelectItem = (item: ToDoTask) => {
     // select or unselect
@@ -251,6 +238,7 @@ const CompletedScreen = () => {
         Toast.show("Items deleted successfully", Toast.SHORT);
         setSelectedTasks([]);
         setSelectedIdentifier([]);
+        setIsMultipleSelect(false);
       } catch (error) {
         Toast.show("Error deleting items, try again later", Toast.SHORT);
       }
