@@ -137,10 +137,55 @@ const CompletedScreen = () => {
   //   </View>
   // );
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Completed</Text>
-      
+    <View style={styles.mainContainer}>
+      {sortedTasks.length !== 0 ? (
+        <View style={styles.statusView}>
+          <Text style={styles.statusTitle}>Completed</Text>
+          <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
+              <Text>{isAscending ?<Entypo name="arrow-with-circle-up" size={28} color="black" /> 
+              : <Entypo name="arrow-with-circle-down" size={28} color="black" />}</Text>
+          </TouchableOpacity>
+          <FlatList
+            keyExtractor={(item) => item.id.toString()}
+            data={sortedTasks}
+            renderItem={({ item }) => (
+              <View>
+                <TouchableOpacity
+                  style={styles.flatListDesign}
+                  onLongPress={() => {
+                    !isMultipleSelect ? enableMultipleSelect() : {};
+                  }}
+                  onPress={() => handleSelectItem(item)}
+                >
+                  {isMultipleSelect ? (
+                    selectedIdentifier.includes(item.id) ? (
+                      <Feather
+                        name="check-circle"
+                        size={14}
+                        color="black"
+                        style={{ marginRight: wp(1) }}
+                      />
+                    ) : (
+                      <Feather
+                        name="circle"
+                        size={14}
+                        color="black"
+                        style={{ marginRight: wp(1) }}
+                      />
+                    )
+                  ) : null}
+                  <View>
+                    <Text style={styles.taskTitle}>{item.taskTitle}</Text>
+                    <Text style={styles.taskDueDate}>
+                      {formatDateString(item.dueDate)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
+      ) : null}
       <View
         style={{
           position: "absolute",

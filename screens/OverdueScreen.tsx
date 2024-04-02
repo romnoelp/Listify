@@ -143,14 +143,56 @@ const OverdueScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Overdue</Text>
-      <FlatList
-        data={tasks.filter((task) => task.status === "Overdue")}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContainer}
-      />
+    <View style={styles.mainContainer}>
+      {sortedTasks.length !== 0 ? (
+        <View style={styles.statusView}>
+          <Text style={styles.statusTitle}>Overdue</Text>
+          <TouchableOpacity style={styles.sortIndicator} onPress={handleSortToggle}>
+              <Text>{isAscending ?<Entypo name="arrow-with-circle-up" size={28} color="black" /> 
+              : <Entypo name="arrow-with-circle-down" size={28} color="black" />}</Text>
+          </TouchableOpacity>
+          <FlatList
+            keyExtractor={(item) => item.id.toString()}
+            data={sortedTasks}
+            renderItem={({ item }) => (
+              <View>
+                <TouchableOpacity
+                  style={styles.flatListDesign}
+                  onLongPress={() => {
+                    !isMultipleSelect ? enableMultipleSelect() : {};
+                  }}
+                  onPress={() => handleSelectItem(item)}
+                >
+                  {isMultipleSelect ? (
+                    selectedIdentifier.includes(item.id) ? (
+                      <Feather
+                        name="check-circle"
+                        size={14}
+                        color="black"
+                        style={{ marginRight: wp(1) }}
+                      />
+                    ) : (
+                      <Feather
+                        name="circle"
+                        size={14}
+                        color="black"
+                        style={{ marginRight: wp(1) }}
+                      />
+                    )
+                  ) : null}
+                  <View>
+                    <Text style={styles.taskTitle}>{item.taskTitle}</Text>
+                    <Text style={styles.taskDueDate}>
+                      {formatDateString(item.dueDate)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
+      ) : null}
+
       <View
         style={{
           position: "absolute",
@@ -161,15 +203,8 @@ const OverdueScreen = () => {
           alignItems: "center",
         }}
       >
-        {/*Change to the floating button rotation shit  */}
-        <FloatingButton
-          onAddItemsPress={() => setIsAddTaskModalVisible(true)}
-          onDeleteAllItemsPress={function (): void {
-            throw new Error(
-              "Where's the function, cuh? Define it first, bish."
-            );
-          }}
-        ></FloatingButton>
+
+
       </View>
       <AddModal //use this to show addModal
         dueDate={dueDate}
