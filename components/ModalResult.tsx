@@ -36,7 +36,7 @@ const ModalResult = ({
         >
           <Text
             style={{
-              fontFamily: "kodchasan-bold",
+              fontFamily: "kodchasan-semibold",
               fontSize: hp(3),
               color: "#FFFFFF",
               textAlign: "center",
