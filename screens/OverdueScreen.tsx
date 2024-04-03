@@ -13,7 +13,9 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { Feather } from "@expo/vector-icons";
-import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import RNDateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import AddModal from "../components/AddModal";
 import { auth, db } from "../firebaseConfig";
 import { ToDoTask } from "../types";
@@ -24,6 +26,7 @@ import firebase from "firebase/compat/app";
 import { useFocusEffect } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
 import { Button } from "@rneui/base";
+import ModalResult from "../components/ModalResult";
 
 const OverdueScreen = () => {
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
@@ -38,6 +41,10 @@ const OverdueScreen = () => {
   const [selectedTasks, setSelectedTasks] = useState<ToDoTask[]>([]);
   const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
   const [sortedList, setSortedList] = useState<ToDoTask[]>([]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showModalResult, setShowModalResult] = useState(false);
+  const [searchDate, setSearchDate] = useState<Date>(new Date());
+  
 
   const user = auth.currentUser;
 
@@ -79,6 +86,35 @@ const OverdueScreen = () => {
         setShowClock(false);
       }
     }
+    if (event.type === "dismissed") {
+      setShowClock(false);
+    }
+  };
+  console.log(
+    sortedList.map((item) => {
+      const month = item.dueDate.getMonth();
+      const day = item.dueDate.getDate();
+      return { month, day };
+    })
+  );
+  const onChangeDateSearch = (
+    event: DateTimePickerEvent,
+    selectedDate?: Date
+  ) => {
+    // for date searching
+    if (event.type === "set" && selectedDate) {
+      const currentDate = selectedDate;
+      setSearchDate(currentDate);
+      if (Platform.OS === "android") {
+        setShowDatePicker(false);
+      }
+      setShowModalResult(true);
+    }
+    if (event.type === "dismissed") {
+      setShowDatePicker(false);
+    }
+
+    return () => setShowDatePicker(!showDatePicker);
   };
 
   const formatDateString = (date: Date): string => {
@@ -231,6 +267,11 @@ const OverdueScreen = () => {
     };
   }, [TasksList]);
 
+  const closeResultModal = () => {
+    setShowModalResult(false);
+  };
+
+
   return (
     <View style={styles.mainContainer}>
       <Button
@@ -244,6 +285,7 @@ const OverdueScreen = () => {
           marginTop: hp(1),
           justifyContent: "flex-start",
         }}
+        onPress={() => setShowDatePicker(true)}
       >
         <Entypo name="magnifying-glass" size={20} color="black" />
         <Text style={{ marginLeft: wp(2), fontFamily: "kodchasan-extralight" }}>
@@ -305,9 +347,7 @@ const OverdueScreen = () => {
         <FloatingButton
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
           onDeleteAllItemsPress={() => deleteItems()}
-          onCompleteAllItemsPress={function (): void {
-            throw new Error("Function not implemented.");
-          }}
+          onCompleteAllItemsPress={() => completeTask()}
         />
       </View>
       <AddModal
@@ -326,6 +366,27 @@ const OverdueScreen = () => {
         taskDescription={taskDescription}
         taskTitle={taskTitle}
         closeAddTaskModal={closeAddTaskModal}
+      />
+      {showDatePicker && (
+        <RNDateTimePicker
+          mode="date"
+          display="calendar"
+          value={searchDate}
+          onChange={onChangeDateSearch}
+        />
+      )}
+
+      <ModalResult
+        closeResultModal={closeResultModal}
+        showModalResult={showModalResult}
+        resultList={sortedList.filter((item) => {
+          const itemDate = new Date(item.dueDate);
+          return (
+            itemDate.getMonth() === searchDate.getMonth() &&
+            itemDate.getDate() === searchDate.getDate()
+          );
+        })}
+        formatDateString={formatDateString}
       />
     </View>
   );
