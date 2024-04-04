@@ -27,6 +27,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
 import { Button } from "@rneui/base";
 import ModalResult from "../components/ModalResult";
+import { interpolationSearch } from "../InterpolationSearch";
 
 const CompletedScreen = () => {
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
@@ -41,7 +42,7 @@ const CompletedScreen = () => {
   const [selectedTasks, setSelectedTasks] = useState<ToDoTask[]>([]);
   const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
   const [sortedList, setSortedList] = useState<ToDoTask[]>([]);
-  const [searchDate, setSearchDate] = useState<Date>(new Date());
+  const [searchDate, setSearchDate] = useState<Date | undefined>();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showModalResult, setShowModalResult] = useState(false);
 
@@ -62,6 +63,7 @@ const CompletedScreen = () => {
   const showDatepicker = () => {
     setShowCalendar(!showCalendar);
   };
+  console.log(sortedList);
 
   const onChangeDate = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (event.type === "set" && selectedDate) {
@@ -335,7 +337,22 @@ const CompletedScreen = () => {
             )}
           />
         </View>
-      ) : null}
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text
+            style={{
+              fontFamily: "kodchasan-light",
+              fontSize: hp(1.5),
+              textAlign: "center",
+            }}
+          >
+            Your completed tasks list is empty. Keep taking small steps towards
+            your goals!
+          </Text>
+        </View>
+      )}
 
       <View
         style={{
@@ -374,7 +391,7 @@ const CompletedScreen = () => {
         <RNDateTimePicker
           mode="date"
           display="calendar"
-          value={searchDate}
+          value={searchDate ? searchDate : new Date()}
           onChange={onChangeDateSearch}
         />
       )}
@@ -382,16 +399,9 @@ const CompletedScreen = () => {
       <ModalResult
         closeResultModal={closeResultModal}
         showModalResult={showModalResult}
-        resultList={sortedList.filter((item) => {
-          const itemDate = new Date(item.dueDate);
-          return (
-            itemDate.getMonth() === searchDate.getMonth() &&
-            itemDate.getDate() === searchDate.getDate()
-          );
-        })}
+        resultList={interpolationSearch(sortedList, searchDate!)}
         formatDateString={formatDateString}
       />
-
     </View>
   );
 };
