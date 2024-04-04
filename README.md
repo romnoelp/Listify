@@ -7,6 +7,14 @@
 </div>
 
 <div align="center">
+  <h1><b>𝙳𝚘𝚠𝚗𝚕𝚘𝚊𝚍 𝚕𝚒𝚗𝚔𝚜</b></h1>
+</div>
+
+<div align="center">
+   <p style="text-align: justify;">[𝙰𝚗𝚍𝚛𝚘𝚒𝚍](https://expo.dev/accounts/romnoel02/projects/Listify/builds/5209e44c-3c49-431c-ae65-779c89b22d95)</p>
+</div>
+
+<div align="center">
   <h1><b>𝙰𝚙𝚙𝚕𝚒𝚌𝚊𝚝𝚒𝚘𝚗 𝙴𝚡𝚙𝚎𝚛𝚒𝚎𝚗𝚌𝚎</b></h1>
 </div>
 
