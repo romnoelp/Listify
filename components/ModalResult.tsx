@@ -34,28 +34,46 @@ const ModalResult = ({
             borderRadius: wp(5),
           }}
         >
-          <Text
-            style={{
-              fontFamily: "kodchasan-semibold",
-              fontSize: hp(3),
-              color: "#FFFFFF",
-              textAlign: "center",
-            }}
-          >
-            Result
-          </Text>
-          <FlatList
-            data={resultList}
-            renderItem={({ item }) => (
-              <View style={{ marginLeft: wp(3), marginVertical: hp(2) }}>
-                <Text style={styles.taskTitle}>{item.taskTitle}</Text>
-                <Text style={styles.taskDueDate}>
-                  {formatDateString(item.dueDate)}
-                </Text>
-                <Text style={styles.taskDueDate}>{item.status}</Text>
-              </View>
-            )}
-          />
+          {resultList.length !== 0 ? (
+            <View>
+              <Text
+                style={{
+                  fontFamily: "kodchasan-semibold",
+                  fontSize: hp(3),
+                  color: "#FFFFFF",
+                  textAlign: "center",
+                }}
+              >
+                Result
+              </Text>
+              <FlatList
+                data={resultList}
+                renderItem={({ item }) => (
+                  <View style={{ marginLeft: wp(3), marginVertical: hp(2) }}>
+                    <Text style={styles.taskTitle}>{item.taskTitle}</Text>
+                    <Text style={styles.taskDueDate}>
+                      {formatDateString(item.dueDate)}
+                    </Text>
+                    <Text style={styles.taskDueDate}>{item.status}</Text>
+                  </View>
+                )}
+              />
+            </View>
+          ) : (
+            <View
+              style={{ alignSelf: "center", flex: 1, justifyContent: "center" }}
+            >
+              <Text
+                style={{
+                  fontFamily: "kodchasan-light",
+                  fontSize: hp(3),
+                  color: "#FFFFFF",
+                }}
+              >
+                No Results Found
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </Modal>

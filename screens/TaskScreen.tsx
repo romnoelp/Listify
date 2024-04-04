@@ -273,7 +273,9 @@ const TaskScreen = () => {
             <View style={styles.parentStatusView}>
               <Text style={styles.statusTitle}>On Going</Text>
               <View style={styles.circularPending}>
-                <Text style={{ fontFamily: "kodchasan-light" }}>
+                <Text
+                  style={{ fontFamily: "kodchasan-light", fontSize: hp(1.5) }}
+                >
                   {sortedTasksList
                     .filter((item) => item.status === "OnGoing")
                     .length.toString()}
@@ -330,7 +332,9 @@ const TaskScreen = () => {
             <View style={styles.parentStatusView}>
               <Text style={styles.statusTitle}>Overdue</Text>
               <View style={styles.circularPending}>
-                <Text style={{ fontFamily: "kodchasan-light" }}>
+                <Text
+                  style={{ fontFamily: "kodchasan-light", fontSize: hp(1.5) }}
+                >
                   {sortedTasksList
                     .filter((item) => item.status === "OverDue")
                     .length.toString()}
@@ -384,7 +388,9 @@ const TaskScreen = () => {
             <View style={styles.parentStatusView}>
               <Text style={styles.statusTitle}>Finished</Text>
               <View style={styles.circularPending}>
-                <Text style={{ fontFamily: "kodchasan-light" }}>
+                <Text
+                  style={{ fontFamily: "kodchasan-light", fontSize: hp(1.5) }}
+                >
                   {sortedTasksList
                     .filter((item) => item.status === "Completed")
                     .length.toString()}
@@ -433,7 +439,15 @@ const TaskScreen = () => {
               )}
             />
           </View>
-        ) : null}
+        ) : (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <Text style={{ fontFamily: "kodchasan-light" }}>
+              Add a task to get started
+            </Text>
+          </View>
+        )}
       </View>
 
       <View

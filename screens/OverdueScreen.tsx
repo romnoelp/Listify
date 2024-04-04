@@ -27,6 +27,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
 import { Button } from "@rneui/base";
 import ModalResult from "../components/ModalResult";
+import { interpolationSearch } from "../InterpolationSearch";
 
 const OverdueScreen = () => {
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
@@ -43,8 +44,7 @@ const OverdueScreen = () => {
   const [sortedList, setSortedList] = useState<ToDoTask[]>([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showModalResult, setShowModalResult] = useState(false);
-  const [searchDate, setSearchDate] = useState<Date>(new Date());
-  
+  const [searchDate, setSearchDate] = useState<Date | undefined>();
 
   const user = auth.currentUser;
 
@@ -271,7 +271,6 @@ const OverdueScreen = () => {
     setShowModalResult(false);
   };
 
-
   return (
     <View style={styles.mainContainer}>
       <Button
@@ -335,7 +334,15 @@ const OverdueScreen = () => {
             )}
           />
         </View>
-      ) : null}
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ fontFamily: "kodchasan-light", fontSize: hp(1.5) }}>
+            Looks like you've been proactive! No overdue tasks to manage.
+          </Text>
+        </View>
+      )}
 
       <View
         style={{
@@ -371,7 +378,7 @@ const OverdueScreen = () => {
         <RNDateTimePicker
           mode="date"
           display="calendar"
-          value={searchDate}
+          value={searchDate ? searchDate : new Date()}
           onChange={onChangeDateSearch}
         />
       )}
@@ -379,13 +386,7 @@ const OverdueScreen = () => {
       <ModalResult
         closeResultModal={closeResultModal}
         showModalResult={showModalResult}
-        resultList={sortedList.filter((item) => {
-          const itemDate = new Date(item.dueDate);
-          return (
-            itemDate.getMonth() === searchDate.getMonth() &&
-            itemDate.getDate() === searchDate.getDate()
-          );
-        })}
+        resultList={interpolationSearch(sortedList, searchDate!)}
         formatDateString={formatDateString}
       />
     </View>

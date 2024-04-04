@@ -27,6 +27,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
 import { Button } from "@rneui/base";
 import ModalResult from "../components/ModalResult";
+import { interpolationSearch } from "../InterpolationSearch";
 
 const OngoingScreen = () => {
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
@@ -41,7 +42,7 @@ const OngoingScreen = () => {
   const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
   const [sortedList, setSortedList] = useState<ToDoTask[]>([]);
   const [iniitalRender, setInitialRender] = useState(false);
-  const [searchDate, setSearchDate] = useState<Date>(new Date());
+  const [searchDate, setSearchDate] = useState<Date | undefined>();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showModalResult, setShowModalResult] = useState(false);
 
@@ -88,13 +89,7 @@ const OngoingScreen = () => {
       setShowClock(false);
     }
   };
-  console.log(
-    sortedList.map((item) => {
-      const month = item.dueDate.getMonth();
-      const day = item.dueDate.getDate();
-      return { month, day };
-    })
-  );
+
   const onChangeDateSearch = (
     event: DateTimePickerEvent,
     selectedDate?: Date
@@ -334,7 +329,15 @@ const OngoingScreen = () => {
             )}
           />
         </View>
-      ) : null}
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ fontFamily: "kodchasan-light" }}>
+            Currently not working on any tasks
+          </Text>
+        </View>
+      )}
 
       <View
         style={{
@@ -374,7 +377,7 @@ const OngoingScreen = () => {
         <RNDateTimePicker
           mode="date"
           display="calendar"
-          value={searchDate}
+          value={searchDate ? searchDate : new Date()}
           onChange={onChangeDateSearch}
         />
       )}
@@ -382,13 +385,7 @@ const OngoingScreen = () => {
       <ModalResult
         closeResultModal={closeResultModal}
         showModalResult={showModalResult}
-        resultList={sortedList.filter((item) => {
-          const itemDate = new Date(item.dueDate);
-          return (
-            itemDate.getMonth() === searchDate.getMonth() &&
-            itemDate.getDate() === searchDate.getDate()
-          );
-        })}
+        resultList={interpolationSearch(sortedList, searchDate!)}
         formatDateString={formatDateString}
       />
     </View>
