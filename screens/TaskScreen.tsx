@@ -22,6 +22,7 @@ import Toast from "react-native-simple-toast";
 import FloatingButton from "../components/FloatingButton";
 import firebase from "firebase/compat/app";
 import { useFocusEffect } from "@react-navigation/native";
+import { useNotificationContext } from "../context/notificationContext";
 
 const TaskScreen = () => {
   const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
@@ -36,6 +37,7 @@ const TaskScreen = () => {
   const [selectedTasks, setSelectedTasks] = useState<ToDoTask[]>([]);
   const [selectedIdentifier, setSelectedIdentifier] = useState<String[]>([]);
   const [sortedTasksList, setSortedTasksList] = useState<ToDoTask[]>([]);
+  const { setNewNotificationList, addNotification } = useNotificationContext();
 
   const user = auth.currentUser;
 
@@ -79,6 +81,11 @@ const TaskScreen = () => {
 
         if (!initialFetch) {
           setNewTasksList(fetchedData);
+          const currentDate = new Date();
+          const twoDaysBeforeDueDate = new Date(currentDate.getTime());
+          setNewNotificationList(
+            fetchedData.filter((task) => task.dueDate <= twoDaysBeforeDueDate)
+          );
         }
       }
     } catch (error) {
@@ -161,6 +168,11 @@ const TaskScreen = () => {
         };
 
         addTask(newTask);
+        const currentDate = new Date();
+        const twoDaysBeforeDueDate = new Date(currentDate.getTime());
+        if (newTask.dueDate <= twoDaysBeforeDueDate) {
+          addNotification(newTask);
+        }
         Toast.show("Added Successfully", Toast.SHORT);
         closeAddTaskModal();
       }
@@ -188,6 +200,7 @@ const TaskScreen = () => {
   useEffect(() => {
     const sortedArray = sortData(TasksList);
     setSortedTasksList(sortedArray);
+
     if (!initialFetch) {
       readData();
     }
@@ -253,6 +266,14 @@ const TaskScreen = () => {
         );
 
         setNewTasksList(updatedTasksList);
+        const currentDate = new Date();
+        const twoDaysBeforeDueDate = new Date(currentDate.getTime());
+        twoDaysBeforeDueDate.setDate(currentDate.getDate() + 2);
+        setNewNotificationList(
+          updatedTasksList.filter(
+            (task) => task.dueDate <= twoDaysBeforeDueDate
+          )
+        );
 
         Toast.show("Items deleted successfully", Toast.SHORT);
         setSelectedTasks([]);
@@ -266,189 +287,195 @@ const TaskScreen = () => {
   //remove comments later
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.subContainer}>
-        {sortedTasksList.filter((item) => item.status === "OnGoing").length !==
-        0 ? (
-          <View style={styles.statusView}>
-            <View style={styles.parentStatusView}>
-              <Text style={styles.statusTitle}>On Going</Text>
-              <View style={styles.circularPending}>
-                <Text
-                  style={{ fontFamily: "kodchasan-light", fontSize: hp(1.5) }}
-                >
-                  {sortedTasksList
-                    .filter((item) => item.status === "OnGoing")
-                    .length.toString()}
-                </Text>
+      {sortedTasksList.length !== 0 ? (
+        <View style={styles.subContainer}>
+          {sortedTasksList.filter((item) => item.status === "OnGoing")
+            .length !== 0 ? (
+            <View style={styles.statusView}>
+              <View style={styles.parentStatusView}>
+                <Text style={styles.statusTitle}>On Going</Text>
+                <View style={styles.circularPending}>
+                  <Text
+                    style={{ fontFamily: "kodchasan-light", fontSize: hp(1.5) }}
+                  >
+                    {sortedTasksList
+                      .filter((item) => item.status === "OnGoing")
+                      .length.toString()}
+                  </Text>
+                </View>
               </View>
-            </View>
 
-            <FlatList
-              keyExtractor={(item) => item.id.toString()}
-              data={sortedTasksList.filter((item) => item.status === "OnGoing")}
-              renderItem={({ item }) => (
-                <View>
-                  <TouchableOpacity
-                    style={styles.flatListDesign}
-                    onLongPress={() => {
-                      !isMultipleSelect ? enableMultipleSelect() : {};
-                    }}
-                    onPress={() => {
-                      handleSelectItem(item);
-                    }}
-                  >
-                    {isMultipleSelect ? (
-                      selectedIdentifier.includes(item.id) ? (
-                        <Feather
-                          name="check-circle"
-                          size={14}
-                          color="black"
-                          style={{ marginRight: wp(1) }}
-                        />
-                      ) : (
-                        <Feather
-                          name="circle"
-                          size={14}
-                          color="black"
-                          style={{ marginRight: wp(1) }}
-                        />
-                      )
-                    ) : null}
-                    <View>
-                      <Text style={styles.taskTitle}>{item.taskTitle}</Text>
-                      <Text style={styles.taskDueDate}>
-                        {formatDateString(item.dueDate)}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
-          </View>
-        ) : null}
-        {sortedTasksList.filter((item) => item.status === "OverDue").length !==
-        0 ? (
-          <View style={styles.statusView}>
-            <View style={styles.parentStatusView}>
-              <Text style={styles.statusTitle}>Overdue</Text>
-              <View style={styles.circularPending}>
-                <Text
-                  style={{ fontFamily: "kodchasan-light", fontSize: hp(1.5) }}
-                >
-                  {sortedTasksList
-                    .filter((item) => item.status === "OverDue")
-                    .length.toString()}
-                </Text>
-              </View>
+              <FlatList
+                keyExtractor={(item) => item.id.toString()}
+                data={sortedTasksList.filter(
+                  (item) => item.status === "OnGoing"
+                )}
+                renderItem={({ item }) => (
+                  <View>
+                    <TouchableOpacity
+                      style={styles.flatListDesign}
+                      onLongPress={() => {
+                        !isMultipleSelect ? enableMultipleSelect() : {};
+                      }}
+                      onPress={() => {
+                        handleSelectItem(item);
+                      }}
+                    >
+                      {isMultipleSelect ? (
+                        selectedIdentifier.includes(item.id) ? (
+                          <Feather
+                            name="check-circle"
+                            size={14}
+                            color="black"
+                            style={{ marginRight: wp(1) }}
+                          />
+                        ) : (
+                          <Feather
+                            name="circle"
+                            size={14}
+                            color="black"
+                            style={{ marginRight: wp(1) }}
+                          />
+                        )
+                      ) : null}
+                      <View>
+                        <Text style={styles.taskTitle}>{item.taskTitle}</Text>
+                        <Text style={styles.taskDueDate}>
+                          {formatDateString(item.dueDate)}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
             </View>
-            <FlatList
-              keyExtractor={(item) => item.id.toString()}
-              data={sortedTasksList.filter((item) => item.status === "OverDue")}
-              renderItem={({ item }) => (
-                <View>
-                  <TouchableOpacity
-                    style={styles.flatListDesign}
-                    onLongPress={() => {
-                      !isMultipleSelect ? enableMultipleSelect() : {};
-                    }}
-                    onPress={() => handleSelectItem(item)}
+          ) : null}
+          {sortedTasksList.filter((item) => item.status === "OverDue")
+            .length !== 0 ? (
+            <View style={styles.statusView}>
+              <View style={styles.parentStatusView}>
+                <Text style={styles.statusTitle}>Overdue</Text>
+                <View style={styles.circularPending}>
+                  <Text
+                    style={{ fontFamily: "kodchasan-light", fontSize: hp(1.5) }}
                   >
-                    {isMultipleSelect ? (
-                      selectedIdentifier.includes(item.id) ? (
-                        <Feather
-                          name="check-circle"
-                          size={14}
-                          color="black"
-                          style={{ marginRight: wp(1) }}
-                        />
-                      ) : (
-                        <Feather
-                          name="circle"
-                          size={14}
-                          color="black"
-                          style={{ marginRight: wp(1) }}
-                        />
-                      )
-                    ) : null}
-                    <View>
-                      <Text style={styles.taskTitle}>{item.taskTitle}</Text>
-                      <Text style={styles.taskDueDate}>
-                        {formatDateString(item.dueDate)}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                    {sortedTasksList
+                      .filter((item) => item.status === "OverDue")
+                      .length.toString()}
+                  </Text>
                 </View>
-              )}
-            />
-          </View>
-        ) : null}
-        {sortedTasksList.filter((item) => item.status === "Completed")
-          .length !== 0 ? (
-          <View style={styles.statusView}>
-            <View style={styles.parentStatusView}>
-              <Text style={styles.statusTitle}>Finished</Text>
-              <View style={styles.circularPending}>
-                <Text
-                  style={{ fontFamily: "kodchasan-light", fontSize: hp(1.5) }}
-                >
-                  {sortedTasksList
-                    .filter((item) => item.status === "Completed")
-                    .length.toString()}
-                </Text>
               </View>
+              <FlatList
+                keyExtractor={(item) => item.id.toString()}
+                data={sortedTasksList.filter(
+                  (item) => item.status === "OverDue"
+                )}
+                renderItem={({ item }) => (
+                  <View>
+                    <TouchableOpacity
+                      style={styles.flatListDesign}
+                      onLongPress={() => {
+                        !isMultipleSelect ? enableMultipleSelect() : {};
+                      }}
+                      onPress={() => handleSelectItem(item)}
+                    >
+                      {isMultipleSelect ? (
+                        selectedIdentifier.includes(item.id) ? (
+                          <Feather
+                            name="check-circle"
+                            size={14}
+                            color="black"
+                            style={{ marginRight: wp(1) }}
+                          />
+                        ) : (
+                          <Feather
+                            name="circle"
+                            size={14}
+                            color="black"
+                            style={{ marginRight: wp(1) }}
+                          />
+                        )
+                      ) : null}
+                      <View>
+                        <Text style={styles.taskTitle}>{item.taskTitle}</Text>
+                        <Text style={styles.taskDueDate}>
+                          {formatDateString(item.dueDate)}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
             </View>
-            <FlatList
-              keyExtractor={(item) => item.id.toString()}
-              data={sortedTasksList.filter(
-                (item) => item.status === "Completed"
-              )}
-              renderItem={({ item }) => (
-                <View>
-                  <TouchableOpacity
-                    style={styles.flatListDesign}
-                    onLongPress={() => {
-                      !isMultipleSelect ? enableMultipleSelect() : {};
-                    }}
-                    onPress={() => handleSelectItem(item)}
+          ) : null}
+          {sortedTasksList.filter((item) => item.status === "Completed")
+            .length !== 0 ? (
+            <View style={styles.statusView}>
+              <View style={styles.parentStatusView}>
+                <Text style={styles.statusTitle}>Finished</Text>
+                <View style={styles.circularPending}>
+                  <Text
+                    style={{ fontFamily: "kodchasan-light", fontSize: hp(1.5) }}
                   >
-                    {isMultipleSelect ? (
-                      selectedIdentifier.includes(item.id) ? (
-                        <Feather
-                          name="check-circle"
-                          size={14}
-                          color="black"
-                          style={{ marginRight: wp(1) }}
-                        />
-                      ) : (
-                        <Feather
-                          name="circle"
-                          size={14}
-                          color="black"
-                          style={{ marginRight: wp(1) }}
-                        />
-                      )
-                    ) : null}
-                    <View>
-                      <Text style={styles.taskTitle}>{item.taskTitle}</Text>
-                      <Text style={styles.taskDueDate}>
-                        {formatDateString(item.dueDate)}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                    {sortedTasksList
+                      .filter((item) => item.status === "Completed")
+                      .length.toString()}
+                  </Text>
                 </View>
-              )}
-            />
-          </View>
-        ) : (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <Text style={{ fontFamily: "kodchasan-light" }}>
-              Add a task to get started
-            </Text>
-          </View>
-        )}
-      </View>
+              </View>
+              <FlatList
+                keyExtractor={(item) => item.id.toString()}
+                data={sortedTasksList.filter(
+                  (item) => item.status === "Completed"
+                )}
+                renderItem={({ item }) => (
+                  <View>
+                    <TouchableOpacity
+                      style={styles.flatListDesign}
+                      onLongPress={() => {
+                        !isMultipleSelect ? enableMultipleSelect() : {};
+                      }}
+                      onPress={() => handleSelectItem(item)}
+                    >
+                      {isMultipleSelect ? (
+                        selectedIdentifier.includes(item.id) ? (
+                          <Feather
+                            name="check-circle"
+                            size={14}
+                            color="black"
+                            style={{ marginRight: wp(1) }}
+                          />
+                        ) : (
+                          <Feather
+                            name="circle"
+                            size={14}
+                            color="black"
+                            style={{ marginRight: wp(1) }}
+                          />
+                        )
+                      ) : null}
+                      <View>
+                        <Text style={styles.taskTitle}>{item.taskTitle}</Text>
+                        <Text style={styles.taskDueDate}>
+                          {formatDateString(item.dueDate)}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </View>
+          ) : null}
+        </View>
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ fontFamily: "kodchasan-light" }}>
+            Add a task to get started
+          </Text>
+        </View>
+      )}
 
       <View
         style={{
@@ -457,7 +484,6 @@ const TaskScreen = () => {
           right: wp(40),
         }}
       >
-        {/*Change to the floating button rotation shit  */}
         <FloatingButton
           onAddItemsPress={() => setIsAddTaskModalVisible(true)}
           onDeleteAllItemsPress={() => deleteItems()}
